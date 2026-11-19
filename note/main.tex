@@ -1,0 +1,196 @@
+\documentclass[a4paper, 10pt]{article}
+
+\usepackage{float}
+\usepackage{amsmath,amsfonts}
+\usepackage{amssymb}
+\usepackage{arydshln}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{listings,jvlisting}
+\usepackage{url}
+\usepackage{enumerate}
+\usepackage{multicol}
+\usepackage{geometry}
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\usepackage{luatexja-fontspec}
+\usepackage{cancel}
+\usepackage{indentfirst}
+\usepackage{sectsty}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage[
+  backend = biber,
+  citestyle = authoryear-comp, 
+  bibstyle = authoryear, 
+  date = year,
+  dashed = false,
+  eprint = false,
+  url = false,
+  isbn = false,
+  maxcitenames = 2,
+  maxbibnames = 10,
+  uniquelist = minyear,
+  uniquename = false,
+  nohashothers = true,
+  sorting=nyt, 
+  sortcites=false,
+  giveninits = true
+]{biblatex}
+\addbibresource{ref.bib}
+\renewcommand*{\finalnamedelim}{\addspace\&\space}
+
+\geometry{left=2cm, right=2cm, top=2cm, bottom=2cm}
+
+\newtcolorbox{mybox}[1][]{%
+    breakable,
+    enhanced,
+    colframe=blue!75!black,
+    colback=blue!10,
+    coltitle=black,
+    fonttitle=\bfseries,
+    title=My Box,
+    watermark color=black!10,
+    watermark text=\ifnum\value{tcbcolframe}=1 Continued on next page\else Continued from previous page\fi,
+    #1
+}
+
+\setmainjfont{Noto Serif CJK JP}
+\setmainfont{STIX-Two-Text}
+%\setmainfont{CMU-Serif}
+\setsansfont{Helvetica-Neue}
+
+\setmathfont{STIX-Two-Math}
+%\setmathfont{Asana-Math}
+%\setmathfont{Libertinus-Math}
+%\setmathfont{DejaVu-Math-TeX-Gyre}
+%\setmathfont{XITS-Math}
+%\setmathfont{STIX}
+
+%\sectionfont{\rmfamily\large\bfseries}
+%\subsectionfont{\rmfamily\normalsize\bfseries}
+\sectionfont{\sffamily\gtfamily\Large\bfseries}
+\subsectionfont{\sffamily\gtfamily\Large\bfseries}
+\subsubsectionfont{\sffamily\gtfamily\large\bfseries}
+
+\lstset{
+  frame={tb},
+  numberstyle={\ttfamily\scriptsize},
+  stepnumber=1,
+  numbers=left,
+  language=Python,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{blue},
+  stringstyle=\color{red},
+  commentstyle=\color{green},
+  morecomment=[l][\color{magenta}]{\#}
+  }
+
+
+\setlength{\parindent}{1em}
+
+\title{\vspace{-2.0cm}A note on the implementation of generalized R/T coefficient method}
+\author{Harusato Kimura}
+
+\begin{document}
+
+\maketitle
+
+\begin{align}
+  \Lambda_d^{(i)}(z) &= \symrm{diag}\left\{ 
+  \symrm{e}^{-\gamma^{(i)} (z - z^{(i - 1)})},
+  \symrm{e}^{-\nu^{(i)} (z - z^{(i - 1)})}
+  \right\} 
+  \\
+  \Lambda_u^{(i)}(z) &= \symrm{diag}\left\{ 
+  \symrm{e}^{-\gamma^{(i)}(z^{(i)} - z)},
+  \symrm{e}^{-\nu^{(i)}(z^{(i)} - z)}
+  \right\}
+\end{align}
+
+$\Lambda_d^{(i)}(z^{(i)})$ and $\Lambda_u^{(i + 1)}(z^{(i)})$ are expressed as
+\begin{align}
+  \Lambda_d^{(i)}(z^{(i)}) 
+  &= 
+  \symrm{diag}\left\{ 
+  \symrm{e}^{-\gamma^{(i)}(z^{(i)} - z^{(i - 1)})},
+  \symrm{e}^{-\nu^{(i)}(z^{(i)} - z^{(i - 1)})}
+  \right\}  
+  = 
+  \symrm{diag}\left\{ 
+  \symrm{e}^{-\gamma^{(i)}h^{(i)}},
+  \symrm{e}^{-\nu^{(i)}h^{(i)}}
+  \right\}  
+  \\
+  \Lambda_u^{(i + 1)}(z^{(i)}) 
+  &= 
+  \symrm{diag}\left\{ 
+  \symrm{e}^{-\gamma^{(i + 1)}(z^{(i + 1)} - z^{(i)})},
+  \symrm{e}^{-\nu^{(i + 1)}(z^{(i + 1)} - z^{(i)})}
+  \right\}
+  =
+  \symrm{diag}\left\{ 
+  \symrm{e}^{-\gamma^{(i + 1)}h^{(i + 1)}},
+  \symrm{e}^{-\nu^{(i + 1)}h^{(i + 1)}}
+  \right\}.
+\end{align}
+
+Define $\Lambda_{\symrm{kernel}}^{(i)}$, for each layer as
+\begin{align}
+  \Lambda_{\symrm{kernel}}^{(i)} = 
+  \symrm{diag}\left\{ 
+  \symrm{e}^{-\gamma^{(i)}h^{(i)}},
+  \symrm{e}^{-\nu^{(i)}h^{(i)}}
+  \right\}.  
+\end{align}
+
+\newpage
+
+Secular function and characteristic equation for Rayleigh wave in homogeneous half-space is 
+\begin{align}
+  f(c) = 
+  \left[ \left( \frac{c}{\alpha} \right)^2 - 1 \right]
+  \left[ \left( \frac{c}{\beta} \right)^2 - 1 \right]
+  - \left[ 1 - \frac{1}{2}\left( \frac{c}{\beta} \right)^2 \right]^4 = 0.
+\end{align}
+
+Its first and second derivatives are then expressed as 
+\begin{align}
+  \frac{\partial f}{\partial c}(c) &= 
+  \frac{2}{\alpha}\left( \frac{c}{\alpha} \right)
+  \left[ \left( \frac{c}{\beta} \right)^2 - 1 \right]
+  +
+  \frac{2}{\beta}\left( \frac{c}{\beta} \right)
+  \left[ \left( \frac{c}{\alpha} \right)^2 - 1 \right]
+  - 
+  4 \left[\frac{1}{2}\left( \frac{c}{\beta} \right)^2 - 1 \right]^3 \frac{c}{\beta^2} 
+  \\
+  &= \frac{4}{\alpha^2 \beta^2}c^3 - 2\left( \frac{1}{\alpha^2} + \frac{1}{\beta^2} \right)c
+  - 
+  \frac{4c}{\beta^2} \left[\frac{1}{2}\left( \frac{c}{\beta} \right)^2 - 1 \right]^3 
+\end{align}
+and 
+\begin{align}
+  \frac{\partial^2 f}{\partial c^2}(c) 
+  &= 
+  \frac{12}{\alpha^2 \beta^2}c^2 - 2\left( \frac{1}{\alpha^2} + \frac{1}{\beta^2} \right)
+  - 
+  \frac{4}{\beta^2} \left[\frac{1}{2}\left( \frac{c}{\beta} \right)^2 - 1 \right]^3 
+  - 
+  \frac{12c^2}{\beta^4} \left[\frac{1}{2}\left( \frac{c}{\beta} \right)^2 - 1 \right]^2 
+\end{align}
+
+
+%\begin{figure}[H]
+%  \begin{center}
+%    \includegraphics[width=0.8\linewidth]{figs/case2.pdf}
+%    \caption{Undamped time series obtained for model A and B with initial conditions of $d_0 = 1.0\,\symrm{m}$ and $v_0 = 10.0\,\symrm{ms^{-1}}$.}
+%    \label{f:case1}
+%  \end{center}
+%\end{figure}
+
+% -----------------------------------------------------------------------------
+\printbibliography
+% -----------------------------------------------------------------------------
+
+\end{document}
