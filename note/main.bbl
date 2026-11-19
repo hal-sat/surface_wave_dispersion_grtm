@@ -16,5 +16,349 @@
   {}
 \endgroup
 
+
+\refsection{0}
+  \datalist[entry]{nyt/global//global/global}
+    \entry{aki2002}{book}{}
+      \name{author}{2}{}{%
+        {{hash=bd8de6cffe0dbd778578bbbe0924d3f3}{%
+           family={Aki},
+           familyi={A\bibinitperiod},
+           given={Keiiti},
+           giveni={K\bibinitperiod}}}%
+        {{hash=599918319bad7a13fafdfcf37a556485}{%
+           family={Richards},
+           familyi={R\bibinitperiod},
+           given={Paul\bibnamedelima G.},
+           giveni={P\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Mill Valley, California}%
+      }
+      \list{publisher}{1}{%
+        {University Science Books}%
+      }
+      \strng{namehash}{3e13bc9a27ceaae077a520336b0cfa38}
+      \strng{fullhash}{3e13bc9a27ceaae077a520336b0cfa38}
+      \strng{bibnamehash}{3e13bc9a27ceaae077a520336b0cfa38}
+      \strng{authorbibnamehash}{3e13bc9a27ceaae077a520336b0cfa38}
+      \strng{authornamehash}{3e13bc9a27ceaae077a520336b0cfa38}
+      \strng{authorfullhash}{3e13bc9a27ceaae077a520336b0cfa38}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Quantitative seismology second edition}
+      \field{year}{2002}
+    \endentry
+    \entry{chen1993}{article}{}
+      \name{author}{1}{}{%
+        {{hash=a2e33682d95040b16a8c40cbd18772b9}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Xiaofei},
+           giveni={X\bibinitperiod}}}%
+      }
+      \strng{namehash}{a2e33682d95040b16a8c40cbd18772b9}
+      \strng{fullhash}{a2e33682d95040b16a8c40cbd18772b9}
+      \strng{bibnamehash}{a2e33682d95040b16a8c40cbd18772b9}
+      \strng{authorbibnamehash}{a2e33682d95040b16a8c40cbd18772b9}
+      \strng{authornamehash}{a2e33682d95040b16a8c40cbd18772b9}
+      \strng{authorfullhash}{a2e33682d95040b16a8c40cbd18772b9}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0956-540X}
+      \field{journaltitle}{Geophysical Journal International}
+      \field{month}{11}
+      \field{number}{2}
+      \field{title}{A systematic and efficient method of computing normal modes for multilayered half-space}
+      \field{volume}{115}
+      \field{year}{1993}
+      \field{pages}{391\bibrangedash 409}
+      \range{pages}{19}
+      \verb{doi}
+      \verb 10.1111/j.1365-246X.1993.tb01194.x
+      \endverb
+      \verb{eprint}
+      \verb https://academic.oup.com/gji/article-pdf/115/2/391/1567934/115-2-391.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1111/j.1365-246X.1993.tb01194.x
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1111/j.1365-246X.1993.tb01194.x
+      \endverb
+    \endentry
+    \entry{fan2007}{article}{}
+      \name{author}{5}{}{%
+        {{hash=a8f05f5189532b412d196299627d8ee9}{%
+           family={Fan},
+           familyi={F\bibinitperiod},
+           given={Youhua},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=a2e33682d95040b16a8c40cbd18772b9}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Xiaofei},
+           giveni={X\bibinitperiod}}}%
+        {{hash=9edcf516aff4b89050ee2dbce7afb1ca}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Xuefeng},
+           giveni={X\bibinitperiod}}}%
+        {{hash=be8f7c58ca2cf4a8339bf67a456d6de1}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Jiaqi},
+           giveni={J\bibinitperiod}}}%
+        {{hash=eaefa8dd180971cfee840787cf3b798b}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Xiaohong},
+           giveni={X\bibinitperiod}}}%
+      }
+      \strng{namehash}{a8f05f5189532b412d196299627d8ee9}
+      \strng{fullhash}{81fa990ca84a6e380635ca39ae17f6ef}
+      \strng{bibnamehash}{81fa990ca84a6e380635ca39ae17f6ef}
+      \strng{authorbibnamehash}{81fa990ca84a6e380635ca39ae17f6ef}
+      \strng{authornamehash}{a8f05f5189532b412d196299627d8ee9}
+      \strng{authorfullhash}{81fa990ca84a6e380635ca39ae17f6ef}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Chinese Journal of Geophysics}
+      \field{number}{1}
+      \field{title}{Approximate Decomposition of the Dispersion Equation at High Frequencies and the Number of Multimodes for Rayleigh Waves}
+      \field{volume}{50}
+      \field{year}{2007}
+      \field{pages}{222\bibrangedash 230}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1002/cjg2.1027
+      \endverb
+      \verb{eprint}
+      \verb https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1002/cjg2.1027
+      \endverb
+      \verb{urlraw}
+      \verb https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1002/cjg2.1027
+      \endverb
+      \verb{url}
+      \verb https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1002/cjg2.1027
+      \endverb
+      \keyw{Rayleigh waves,Dispersion,Multilayered media,Multimode}
+    \endentry
+    \entry{harkrider1964}{article}{}
+      \name{author}{1}{}{%
+        {{hash=1502586b08a69f0b8facfb5340ee959a}{%
+           family={Harkrider},
+           familyi={H\bibinitperiod},
+           given={D.\bibnamedelimi G.},
+           giveni={D\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+      }
+      \strng{namehash}{1502586b08a69f0b8facfb5340ee959a}
+      \strng{fullhash}{1502586b08a69f0b8facfb5340ee959a}
+      \strng{bibnamehash}{1502586b08a69f0b8facfb5340ee959a}
+      \strng{authorbibnamehash}{1502586b08a69f0b8facfb5340ee959a}
+      \strng{authornamehash}{1502586b08a69f0b8facfb5340ee959a}
+      \strng{authorfullhash}{1502586b08a69f0b8facfb5340ee959a}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Bulletin of the Seismological Society of America}
+      \field{number}{2}
+      \field{title}{Surface waves in multilayered elastic media {I}. {Rayleigh} and {Love} waves from buried sources in a multilayered elastic half-space}
+      \field{volume}{54}
+      \field{year}{1964}
+      \field{pages}{627\bibrangedash 679}
+      \range{pages}{53}
+    \endentry
+    \entry{haskell1953}{article}{}
+      \name{author}{1}{}{%
+        {{hash=3300fe67678281086e799b8f14dc7d20}{%
+           family={Haskell},
+           familyi={H\bibinitperiod},
+           given={N.\bibnamedelimi A.},
+           giveni={N\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{3300fe67678281086e799b8f14dc7d20}
+      \strng{fullhash}{3300fe67678281086e799b8f14dc7d20}
+      \strng{bibnamehash}{3300fe67678281086e799b8f14dc7d20}
+      \strng{authorbibnamehash}{3300fe67678281086e799b8f14dc7d20}
+      \strng{authornamehash}{3300fe67678281086e799b8f14dc7d20}
+      \strng{authorfullhash}{3300fe67678281086e799b8f14dc7d20}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0037-1106}
+      \field{journaltitle}{Bulletin of the Seismological Society of America}
+      \field{month}{01}
+      \field{number}{1}
+      \field{title}{{The dispersion of surface waves on multilayered media}}
+      \field{volume}{43}
+      \field{year}{1953}
+      \field{pages}{17\bibrangedash 34}
+      \range{pages}{18}
+      \verb{doi}
+      \verb 10.1785/BSSA0430010017
+      \endverb
+      \verb{eprint}
+      \verb https://pubs.geoscienceworld.org/ssa/bssa/article-pdf/43/1/17/5302553/bssa0430010017.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1785/BSSA0430010017
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1785/BSSA0430010017
+      \endverb
+    \endentry
+    \entry{he2006}{article}{}
+      \name{author}{3}{}{%
+        {{hash=655b6a87a756b5652aefc774a322ac3f}{%
+           family={He},
+           familyi={H\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=2bdd48dc68b3d7c9d63e3844f2459fd6}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={W.},
+           giveni={W\bibinitperiod}}}%
+        {{hash=60aeb23a507616b6ae2488ddaab41f0e}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={X.},
+           giveni={X\bibinitperiod}}}%
+      }
+      \strng{namehash}{655b6a87a756b5652aefc774a322ac3f}
+      \strng{fullhash}{4d5eab26957a1e9590a418d6c0de43a4}
+      \strng{bibnamehash}{4d5eab26957a1e9590a418d6c0de43a4}
+      \strng{authorbibnamehash}{4d5eab26957a1e9590a418d6c0de43a4}
+      \strng{authornamehash}{655b6a87a756b5652aefc774a322ac3f}
+      \strng{authorfullhash}{4d5eab26957a1e9590a418d6c0de43a4}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Chinese Journal of Geophysics}
+      \field{title}{Normal mode computation by the generalized reflection-transmission coefficient method in planar layered half space}
+      \field{volume}{49}
+      \field{year}{2006}
+      \field{pages}{1074\bibrangedash 1081}
+      \range{pages}{8}
+    \endentry
+    \entry{wu2016}{article}{}
+      \name{author}{2}{}{%
+        {{hash=4e31f6e2351bdd7652825d00350a02fd}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+        {{hash=60aeb23a507616b6ae2488ddaab41f0e}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={X.},
+           giveni={X\bibinitperiod}}}%
+      }
+      \strng{namehash}{d5d12e84314f4444074ca604db24d6f0}
+      \strng{fullhash}{d5d12e84314f4444074ca604db24d6f0}
+      \strng{bibnamehash}{d5d12e84314f4444074ca604db24d6f0}
+      \strng{authorbibnamehash}{d5d12e84314f4444074ca604db24d6f0}
+      \strng{authornamehash}{d5d12e84314f4444074ca604db24d6f0}
+      \strng{authorfullhash}{d5d12e84314f4444074ca604db24d6f0}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Geophysical Journal International}
+      \field{number}{2}
+      \field{title}{Stable, accurate and efficient computation of normal modes for horizontal stratified models}
+      \field{volume}{206}
+      \field{year}{2016}
+      \field{pages}{1281\bibrangedash 1300}
+      \range{pages}{20}
+    \endentry
+    \entry{yuan2024}{article}{}
+      \name{author}{5}{}{%
+        {{hash=e28854b762a20ce8765baca3583bfb60}{%
+           family={Yuan},
+           familyi={Y\bibinitperiod},
+           given={Shichuan},
+           giveni={S\bibinitperiod}}}%
+        {{hash=10499aa620a5eabad6a8ef41fadaa23a}{%
+           family={Pan},
+           familyi={P\bibinitperiod},
+           given={Lei},
+           giveni={L\bibinitperiod}}}%
+        {{hash=5d45e83bfdb58994ebc5e727a8f63aad}{%
+           family={Shi},
+           familyi={S\bibinitperiod},
+           given={Caiwang},
+           giveni={C\bibinitperiod}}}%
+        {{hash=973e9fd46c1b8fea6b652d0a4a63e136}{%
+           family={Song},
+           familyi={S\bibinitperiod},
+           given={Xianhai},
+           giveni={X\bibinitperiod}}}%
+        {{hash=a2e33682d95040b16a8c40cbd18772b9}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Xiaofei},
+           giveni={X\bibinitperiod}}}%
+      }
+      \strng{namehash}{e28854b762a20ce8765baca3583bfb60}
+      \strng{fullhash}{8cec6933c9db062f55937b8d818ba71e}
+      \strng{bibnamehash}{8cec6933c9db062f55937b8d818ba71e}
+      \strng{authorbibnamehash}{8cec6933c9db062f55937b8d818ba71e}
+      \strng{authornamehash}{e28854b762a20ce8765baca3583bfb60}
+      \strng{authorfullhash}{8cec6933c9db062f55937b8d818ba71e}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1365-246X}
+      \field{journaltitle}{Geophysical Journal International}
+      \field{month}{06}
+      \field{number}{3}
+      \field{title}{Computation and analysis of surface wave dispersion and attenuation in layered viscoelastic-vertical transversely isotropic media by the generalized R/T coefficient method}
+      \field{volume}{238}
+      \field{year}{2024}
+      \field{pages}{1505\bibrangedash 1529}
+      \range{pages}{25}
+      \verb{doi}
+      \verb 10.1093/gji/ggae207
+      \endverb
+      \verb{eprint}
+      \verb https://academic.oup.com/gji/article-pdf/238/3/1505/58594491/ggae207.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1093/gji/ggae207
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1093/gji/ggae207
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
 \endinput
 

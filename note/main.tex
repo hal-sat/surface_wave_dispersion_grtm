@@ -96,8 +96,117 @@
 
 \maketitle
 
+\section{Overview}
+
+This note summarizes the theory behind the program in this repository.
+It covers
+(i) the generalized reflection/transmission (R/T) coefficient method \parencite{chen1993} for the phase velocities of Rayleigh waves in a stack of homogeneous, isotropic and elastic layers over a half-space,
+(ii) the family of secular functions used for models with low-velocity layers \parencite{he2006,wu2016,yuan2024}, and
+(iii) the medium response and the relative power of the modes, which are evaluated from the residue of the surface response.
+The matrices below are written in the same form as in \texttt{src/surface\_wave\_dispersion.cpp}.
+
+\section{Model and notation}
+
+The model consists of $N$ homogeneous layers ($i = 1, \dots, N$) over a homogeneous half-space ($i = N + 1$).
+The $z$-axis points downward and the free surface is at $z = z^{(0)} = 0$.
+The $i$th layer occupies $z^{(i - 1)} < z < z^{(i)}$, and its thickness is $h^{(i)} = z^{(i)} - z^{(i - 1)}$.
+The P-wave velocity, S-wave velocity and density of the $i$th layer are $\alpha^{(i)}$, $\beta^{(i)}$ and $\rho^{(i)}$, respectively, and
 \begin{align}
-  \Lambda_d^{(i)}(z) &= \symrm{diag}\left\{ 
+  \mu^{(i)} = \rho^{(i)} \left( \beta^{(i)} \right)^2, \qquad
+  \lambda^{(i)} = \rho^{(i)} \left( \alpha^{(i)} \right)^2 - 2 \mu^{(i)}.
+\end{align}
+The superscript $(i)$ is omitted when a single layer is considered.
+In the code, the arrays of the layer properties are zero-based, i.e., \texttt{var[i]} holds the value of the $(i + 1)$th layer, whereas \texttt{depth[i]} holds $z^{(i)}$.
+
+\section{Motion-stress vector in a layer}
+
+Consider a plane Rayleigh wave of angular frequency $\omega$ and horizontal wavenumber $k = \omega / c$ that propagates in the $+x$ direction,
+\begin{align}
+  u_x = \symrm{i}\, U(z)\, \symrm{e}^{\symrm{i}(\omega t - kx)}, \quad
+  u_z = W(z)\, \symrm{e}^{\symrm{i}(\omega t - kx)}, \quad
+  \tau_{zx} = \symrm{i}\, T(z)\, \symrm{e}^{\symrm{i}(\omega t - kx)}, \quad
+  \tau_{zz} = S(z)\, \symrm{e}^{\symrm{i}(\omega t - kx)}.
+\end{align}
+With the factor $\symrm{i}$ in the horizontal components, $U$, $W$, $T$ and $S$ of a normal mode are real.
+For real $k$, the results in this note do not depend on the choice of the sign of the time dependence.
+Substitution into Hooke's law and the equation of motion gives a system of first-order differential equations for the motion-stress vector $\symbf{y} = (U, W, T, S)^{\symrm{T}}$,
+\begin{align}
+  \frac{\symrm{d} \symbf{y}}{\symrm{d} z} = A \symbf{y},
+  \qquad
+  A =
+  \begin{pmatrix}
+    0 & k & \dfrac{1}{\mu} & 0 \\[2mm]
+    -\dfrac{\lambda k}{\lambda + 2\mu} & 0 & 0 & \dfrac{1}{\lambda + 2\mu} \\[2mm]
+    \zeta k^2 - \rho \omega^2 & 0 & 0 & \dfrac{\lambda k}{\lambda + 2\mu} \\[2mm]
+    0 & -\rho \omega^2 & -k & 0
+  \end{pmatrix},
+  \qquad
+  \zeta = \frac{4 \mu (\lambda + \mu)}{\lambda + 2 \mu}.
+\end{align}
+$\symbf{y}$ is continuous across the interfaces.
+
+In a homogeneous layer, the eigenvalues of $A$ are $\mp\gamma$ and $\mp\nu$, where
+\begin{align}
+  \gamma = \sqrt{k^2 - \frac{\omega^2}{\alpha^2}}, \qquad
+  \nu = \sqrt{k^2 - \frac{\omega^2}{\beta^2}}, \qquad
+  \symrm{Re}\,\gamma \geq 0, \quad \symrm{Re}\,\nu \geq 0.
+\end{align}
+The eigenvalues $-\gamma$ and $-\nu$ correspond to the down-going (decaying with depth) P and S waves, and $+\gamma$ and $+\nu$ to the up-going ones.
+The general solution in the $i$th layer is therefore written as
+\begin{align}
+  \symbf{y}^{(i)}(z) =
+  E^{(i)}
+  \begin{pmatrix}
+    \Lambda_d^{(i)}(z) & 0 \\
+    0 & \Lambda_u^{(i)}(z)
+  \end{pmatrix}
+  \begin{pmatrix}
+    \symbf{C}_d^{(i)} \\
+    \symbf{C}_u^{(i)}
+  \end{pmatrix},
+  \qquad
+  E^{(i)} =
+  \begin{pmatrix}
+    E_{11}^{(i)} & E_{12}^{(i)} \\
+    E_{21}^{(i)} & E_{22}^{(i)}
+  \end{pmatrix},
+  \label{e:layer_solution}
+\end{align}
+where $\symbf{C}_d^{(i)}$ and $\symbf{C}_u^{(i)}$ are the two-component vectors of the amplitudes of the down-going and up-going (P, S) waves, and $E_{11}^{(i)}, \dots, E_{22}^{(i)}$ are $2 \times 2$ blocks.
+The columns of $E$ are the eigenvectors of $A$,
+\begin{align}
+  E =
+  \begin{pmatrix}
+    -1 & \nu_1 & -1 & \nu_1 \\
+    -\gamma_1 & 1 & \gamma_1 & -1 \\
+    2 \mu \gamma & -\chi \mu & -2 \mu \gamma & \chi \mu \\
+    \chi \mu & -2 \mu \nu & \chi \mu & -2 \mu \nu
+  \end{pmatrix},
+  \qquad
+  \gamma_1 = \frac{\gamma}{k}, \quad
+  \nu_1 = \frac{\nu}{k}, \quad
+  \chi = 2k - \frac{\omega^2}{\beta^2 k},
+\end{align}
+and its inverse is
+\begin{align}
+  E^{-1} =
+  \frac{k}{2 \rho \omega^2}
+  \begin{pmatrix}
+    -2 k \mu & \mu \chi / \gamma_1 & 1 / \gamma_1 & -1 \\
+    -\mu \chi / \nu_1 & 2 k \mu & 1 & -1 / \nu_1 \\
+    -2 k \mu & -\mu \chi / \gamma_1 & -1 / \gamma_1 & -1 \\
+    -\mu \chi / \nu_1 & -2 k \mu & -1 & -1 / \nu_1
+  \end{pmatrix},
+\end{align}
+where $\mu (4k - 2\chi) = 2 \rho \omega^2 / k$ was used for the prefactor.
+
+\section{Generalized R/T coefficients}
+
+\subsection{Phase factors}
+
+The diagonal matrices in \eqref{e:layer_solution} are defined as
+\begin{align}
+  \Lambda_d^{(i)}(z) &= \symrm{diag}\left\{
   \symrm{e}^{-\gamma^{(i)} (z - z^{(i - 1)})},
   \symrm{e}^{-\nu^{(i)} (z - z^{(i - 1)})}
   \right\} 
@@ -144,7 +253,239 @@ Define $\Lambda_{\symrm{kernel}}^{(i)}$, for each layer as
   \right\}.  
 \end{align}
 
-\newpage
+With these definitions, $\symbf{C}_d^{(i)}$ is the amplitude of the down-going waves at the top of the layer and $\symbf{C}_u^{(i)}$ is that of the up-going waves at its bottom.
+Because $\symrm{Re}\,\gamma \geq 0$ and $\symrm{Re}\,\nu \geq 0$, no element of the phase factors grows exponentially, which is the reason why the method is stable at high frequencies.
+For the half-space ($h^{(N + 1)} = \infty$), $\Lambda_{\symrm{kernel}}^{(N + 1)} = 0$.
+
+\subsection{Downward recursion}
+
+The continuity of $\symbf{y}$ at $z = z^{(i)}$ reads
+\begin{align}
+  E^{(i)}
+  \begin{pmatrix}
+    \Lambda_d^{(i)}(z^{(i)}) \symbf{C}_d^{(i)} \\
+    \symbf{C}_u^{(i)}
+  \end{pmatrix}
+  =
+  E^{(i + 1)}
+  \begin{pmatrix}
+    \symbf{C}_d^{(i + 1)} \\
+    \Lambda_u^{(i + 1)}(z^{(i)}) \symbf{C}_u^{(i + 1)}
+  \end{pmatrix}.
+  \label{e:continuity}
+\end{align}
+The generalized transmission and reflection coefficients for the waves incident from above, $\hat{T}_d^{(i)}$ and $\hat{R}_{du}^{(i)}$, are defined by
+\begin{align}
+  \symbf{C}_d^{(i + 1)} = \hat{T}_d^{(i)} \symbf{C}_d^{(i)}, \qquad
+  \symbf{C}_u^{(i)} = \hat{R}_{du}^{(i)} \symbf{C}_d^{(i)}.
+  \label{e:def_Rdu}
+\end{align}
+They are ``generalized'' in the sense that they include all the reverberations in the structure below.
+There is no up-going wave in the half-space, $\symbf{C}_u^{(N + 1)} = 0$, so that
+\begin{align}
+  \hat{R}_{du}^{(N + 1)} = 0.
+\end{align}
+Substituting \eqref{e:def_Rdu} into \eqref{e:continuity} and writing
+\begin{align}
+  W^{(i)} = \left( E^{(i)} \right)^{-1} E^{(i + 1)} =
+  \begin{pmatrix}
+    W_{11}^{(i)} & W_{12}^{(i)} \\
+    W_{21}^{(i)} & W_{22}^{(i)}
+  \end{pmatrix},
+\end{align}
+we obtain the recursion from the bottom to the top ($i = N, N - 1, \dots, 1$),
+\begin{align}
+  \hat{T}_d^{(i)} &=
+  \left[ W_{11}^{(i)} + W_{12}^{(i)} \Lambda_u^{(i + 1)}(z^{(i)}) \hat{R}_{du}^{(i + 1)} \right]^{-1}
+  \Lambda_d^{(i)}(z^{(i)}),
+  \\
+  \hat{R}_{du}^{(i)} &=
+  \left[ W_{21}^{(i)} + W_{22}^{(i)} \Lambda_u^{(i + 1)}(z^{(i)}) \hat{R}_{du}^{(i + 1)} \right]
+  \hat{T}_d^{(i)}.
+\end{align}
+
+\subsection{Upward recursion}
+
+In the same manner, the coefficients for the waves incident from below, $\hat{T}_u^{(i)}$ and $\hat{R}_{ud}^{(i)}$, are defined by
+\begin{align}
+  \symbf{C}_u^{(i)} = \hat{T}_u^{(i)} \symbf{C}_u^{(i + 1)}, \qquad
+  \symbf{C}_d^{(i + 1)} = \hat{R}_{ud}^{(i)} \symbf{C}_u^{(i + 1)}.
+  \label{e:def_Rud}
+\end{align}
+The traction vanishes at the free surface, i.e., the lower two rows of \eqref{e:layer_solution} vanish at $z = z^{(0)}$ for $i = 1$,
+\begin{align}
+  E_{21}^{(1)} \symbf{C}_d^{(1)} + E_{22}^{(1)} \Lambda_u^{(1)}(z^{(0)}) \symbf{C}_u^{(1)} = 0,
+  \label{e:free_surface}
+\end{align}
+which gives the starting value
+\begin{align}
+  \hat{R}_{ud}^{(0)} = -\left( E_{21}^{(1)} \right)^{-1} E_{22}^{(1)} \Lambda_u^{(1)}(z^{(0)}).
+\end{align}
+With
+\begin{align}
+  O^{(i)} = \left( E^{(i + 1)} \right)^{-1} E^{(i)} =
+  \begin{pmatrix}
+    O_{11}^{(i)} & O_{12}^{(i)} \\
+    O_{21}^{(i)} & O_{22}^{(i)}
+  \end{pmatrix},
+\end{align}
+\eqref{e:continuity} and \eqref{e:def_Rud} give the recursion from the top to the bottom ($i = 1, 2, \dots$),
+\begin{align}
+  \hat{T}_u^{(i)} &=
+  \left[ O_{21}^{(i)} \Lambda_d^{(i)}(z^{(i)}) \hat{R}_{ud}^{(i - 1)} + O_{22}^{(i)} \right]^{-1}
+  \Lambda_u^{(i + 1)}(z^{(i)}),
+  \\
+  \hat{R}_{ud}^{(i)} &=
+  \left[ O_{11}^{(i)} \Lambda_d^{(i)}(z^{(i)}) \hat{R}_{ud}^{(i - 1)} + O_{12}^{(i)} \right]
+  \hat{T}_u^{(i)}.
+\end{align}
+
+\section{Secular functions}
+
+\subsection{Secular function associated with the free surface}
+
+Substituting $\symbf{C}_u^{(1)} = \hat{R}_{du}^{(1)} \symbf{C}_d^{(1)}$ into \eqref{e:free_surface}, a non-trivial $\symbf{C}_d^{(1)}$ exists only if
+\begin{align}
+  F_0(\omega, k) =
+  \det \left[ E_{21}^{(1)} + E_{22}^{(1)} \Lambda_u^{(1)}(z^{(0)}) \hat{R}_{du}^{(1)} \right] = 0.
+  \label{e:F0}
+\end{align}
+This is the dispersion equation of Rayleigh waves, and only the downward recursion is required to evaluate it.
+
+\subsection{Secular functions associated with low-velocity layers}
+
+A mode trapped in a low-velocity layer (LVL) has an almost vanishing amplitude at the free surface at high frequencies, and its root is then hardly detected with $F_0$.
+Combining \eqref{e:def_Rdu} and \eqref{e:def_Rud} in the $l$th layer, $\symbf{C}_u^{(l)} = \hat{R}_{du}^{(l)} \symbf{C}_d^{(l)}$ and $\symbf{C}_d^{(l)} = \hat{R}_{ud}^{(l - 1)} \symbf{C}_u^{(l)}$, gives an equivalent dispersion equation that is evaluated inside that layer \parencite{chen1993,he2006,wu2016},
+\begin{align}
+  F_l(\omega, k) =
+  \det \left[ I - \hat{R}_{ud}^{(l - 1)} \hat{R}_{du}^{(l)} \right] = 0.
+\end{align}
+In the code, the $i$th layer ($2 \leq i \leq N$) is regarded as an LVL if $\beta^{(i)} < \beta^{(i - 1)}$ and $\beta^{(i)} < \beta^{(i + 1)}$, and $F_0$ and $F_l$ of all the LVLs are used together.
+The upward recursion is carried out only down to the deepest LVL, and it is skipped when the model has no LVL.
+
+\subsection{Root search}
+
+The roots are searched for in terms of the phase velocity $c = \omega / k$ at each frequency.
+\begin{enumerate}
+  \item The interval from $0.8 \min_i \beta^{(i)}$ to $\beta^{(N + 1)}$ is divided into $\lfloor (M + 1)\, n_{\symrm{grid}} \rfloor$ points, where $M$ is the number of modes predicted after \textcite{fan2007},
+  \begin{align}
+    M = \frac{\omega}{\pi c} \sum_{i = 1}^{N - 1}
+    \symrm{Re} \left[
+      \sqrt{ \left( \frac{c}{\alpha^{(i)}} \right)^2 - 1 }
+      +
+      \sqrt{ \left( \frac{c}{\beta^{(i)}} \right)^2 - 1 }
+    \right] h^{(i)},
+    \qquad c = \beta^{(N + 1)}.
+  \end{align}
+  Additional points are placed at $c_{\symrm{prev}} + \{0, \pm 5 \times 10^{-5}, \pm 5 \times 10^{-4}, \dots, \pm 5\}$ around every root $c_{\symrm{prev}}$ found at the previous frequency.
+  \item The real and imaginary parts of $F_0$ and $F_l$ are evaluated at the grid points. If one of them changes its sign between two adjacent points, that component is bisected.
+  \item The bisection is terminated when the width of the interval is smaller than $\epsilon_c = 10^{-3}$ (in the unit of the velocities of the input), and the candidate is accepted only if the root mean square of the real and imaginary parts of that secular function is sufficiently small there. A sign change that is caused by a singularity instead of a zero is rejected in this way.
+  \item A candidate that coincides with $\alpha^{(i)}$ or $\beta^{(i)}$ of a layer is rejected, because $E^{(i)}$ is singular there.
+\end{enumerate}
+The value of the fundamental mode at zero frequency is linearly extrapolated from the first two frequencies.
+
+\section{Medium response and relative power}
+
+\subsection{Surface response}
+
+Suppose that a traction $\symbf{\tau}_0 = (T(z^{(0)}), S(z^{(0)}))^{\symrm{T}}$ is applied on the free surface.
+$\symbf{C}_u^{(1)} = \hat{R}_{du}^{(1)} \symbf{C}_d^{(1)}$ still holds because it follows from the conditions below the surface, so that the displacement $\symbf{u}_0 = (U(z^{(0)}), W(z^{(0)}))^{\symrm{T}}$ and the traction at the surface are
+\begin{align}
+  \symbf{u}_0 = P\, \symbf{C}_d^{(1)}, \qquad
+  \symbf{\tau}_0 = Q\, \symbf{C}_d^{(1)},
+\end{align}
+with
+\begin{align}
+  P = E_{11}^{(1)} + E_{12}^{(1)} \Lambda_u^{(1)}(z^{(0)}) \hat{R}_{du}^{(1)}, \qquad
+  Q = E_{21}^{(1)} + E_{22}^{(1)} \Lambda_u^{(1)}(z^{(0)}) \hat{R}_{du}^{(1)}.
+\end{align}
+The surface response $Y$ is defined as the matrix that relates them,
+\begin{align}
+  \symbf{u}_0 = Y \symbf{\tau}_0, \qquad
+  Y(\omega, k) = P Q^{-1} =
+  \begin{pmatrix}
+    Y_{xx} & Y_{xz} \\
+    Y_{zx} & Y_{zz}
+  \end{pmatrix}.
+\end{align}
+Since $F_0 = \det Q$ from \eqref{e:F0}, $Y$ has a simple pole at every root $k = k_n$ of the dispersion equation.
+
+\subsection{Medium response as a residue}
+
+The medium response of the $n$th mode for a vertical point force and the vertical displacement at the free surface is defined as
+\begin{align}
+  A_n(\omega) = k_n \mathop{\symrm{Res}}_{k = k_n} Y_{zz}(\omega, k).
+  \label{e:medium_response}
+\end{align}
+Let $U_n(z)$ and $W_n(z)$ be the eigenfunctions of the mode, $c_n$ and $U_{g,n}$ its phase and group velocities, and
+\begin{align}
+  I_{1,n} = \frac{1}{2} \int_0^\infty \rho \left( U_n^2 + W_n^2 \right) \symrm{d}z
+\end{align}
+its energy integral \parencite[eq.~7.74 of][]{aki2002}.
+The residue of $Y$ is a matrix of rank one,
+\begin{align}
+  \mathop{\symrm{Res}}_{k = k_n} Y =
+  -\frac{1}{4 k_n c_n U_{g,n} I_{1,n}}
+  \begin{pmatrix}
+    U_n(0)^2 & U_n(0) W_n(0) \\
+    U_n(0) W_n(0) & W_n(0)^2
+  \end{pmatrix},
+  \qquad
+  A_n = -\frac{W_n(0)^2}{4 c_n U_{g,n} I_{1,n}}.
+  \label{e:residue_energy}
+\end{align}
+The negative sign appears because a force $f_z$ applied on the surface in the $+z$ direction corresponds to $\tau_{zz} = -f_z$ there.
+\eqref{e:residue_energy} was confirmed numerically: for a model with one layer over a half-space, the two sides of the expression for $A_n$ agreed with a relative difference smaller than $10^{-7}$ for the first three modes, where the eigenfunctions were integrated numerically and the group velocity was obtained by a finite difference of the dispersion curve.
+
+$|A_n|$ is the factor that appears in the surface-wave term of the Green function \parencite[eqs.~7.144 and 7.147 of][]{aki2002}.
+The amplitude of the vertical displacement of the $n$th mode at a horizontal distance $r$ due to a vertical point force $F_z$ at the surface is
+\begin{align}
+  \left| u_z \right| =
+  \left| F_z \right| \frac{W_n(0)^2}{8 c_n U_{g,n} I_{1,n}} \sqrt{\frac{2}{\pi k_n r}}
+  =
+  \left| F_z \right| \frac{\left| A_n \right|}{2} \sqrt{\frac{2}{\pi k_n r}}.
+  \label{e:far_field}
+\end{align}
+$A_n$ corresponds to the medium response $A_R = N_R / (\partial F_R / \partial k)$ of \textcite{harkrider1964} in the Thomson--Haskell formulation \parencite{haskell1953}.
+The ratio of the off-diagonal to the diagonal elements of the residue also gives the ellipticity, $U_n(0) / W_n(0) = \symrm{Res}\, Y_{xz} / \symrm{Res}\, Y_{zz}$.
+
+\subsection{Evaluation by contour integration}
+
+The residue in \eqref{e:medium_response} is evaluated by the contour integral along a circle of radius $r_c$ centred at the root, with the trapezoidal rule of $M_c$ points,
+\begin{align}
+  \mathop{\symrm{Res}}_{k = k_n} Y_{zz}
+  = \frac{1}{2 \pi \symrm{i}} \oint Y_{zz}(k)\, \symrm{d}k
+  \approx \frac{1}{M_c} \sum_{m = 0}^{M_c - 1}
+  r_c\, \symrm{e}^{\symrm{i} \theta_m}\, Y_{zz}\!\left( k_n + r_c\, \symrm{e}^{\symrm{i} \theta_m} \right),
+  \qquad
+  \theta_m = \frac{2 \pi (m + 1/2)}{M_c}.
+\end{align}
+Only the downward recursion with a complex wavenumber is required.
+This approach has the following properties.
+\begin{itemize}
+  \item $Y$ does not change when the sign of $\gamma^{(i)}$ or $\nu^{(i)}$ of a finite layer is flipped, whereas $F_0$ does. $Y$ is hence analytic around a root on the real axis except at the other roots and at the branch points of the half-space, and the trapezoidal rule converges geometrically with $M_c$.
+  \item The result does not depend on a step size, and it is insensitive to the error of the root as long as the root is inside the circle. A finite difference along the real axis has neither property; in a test, it failed for the modes trapped in an LVL, whose residues are many orders of magnitude smaller than the regular part of $Y$.
+\end{itemize}
+In the code, $M_c = 32$ and
+\begin{align}
+  r_c = \min \left( 2 \times 10^{-4}\, k_n,\ \frac{1}{4} \min_{l \neq n} \left| k_l - k_n \right| \right),
+\end{align}
+so that the circle does not enclose the other roots.
+The root is known only within $\epsilon_c / 2$ in phase velocity, i.e., within $\delta k = k_n \epsilon_c / (2 c_n)$ in wavenumber.
+If $r_c \leq 4\, \delta k$, the mode is regarded as unresolved and \texttt{nan} is written.
+
+\subsection{Relative power}
+
+From \eqref{e:far_field}, the power of the $n$th mode at a given distance is proportional to $|A_n|^2 / k_n = |A_n|^2 c_n / \omega$.
+The program outputs the power relative to that of the mode with the lowest phase velocity at each frequency ($n = 0$),
+\begin{align}
+  \frac{P_n}{P_0} = \frac{\left| A_n \right|^2 c_n}{\left| A_0 \right|^2 c_0},
+\end{align}
+which is the same quantity as that of the Thomson--Haskell implementation.
+For two test models (one layer over a half-space, and three layers including an LVL over a half-space), the two implementations agreed up to $25\,\symrm{Hz}$ with a median relative difference of about $10^{-7}$.
+The ratio is not meaningful if the $0$th mode is trapped in an LVL and has a vanishing power at the surface.
+
+\section{Rayleigh wave in a homogeneous half-space}
 
 Secular function and characteristic equation for Rayleigh wave in homogeneous half-space is 
 \begin{align}
