@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: Copyright 2024, 2026 Harusato Kimura
+// SPDX-License-Identifier: MIT
 
 #ifndef surface_wave_dispersion_hpp
 #define surface_wave_dispersion_hpp

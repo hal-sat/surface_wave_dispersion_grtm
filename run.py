@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 # SPDX-FileCopyrightText: Copyright 2023, 2025 Harusato Kimura
+# SPDX-License-Identifier: MIT
 
 # ==============================================================================
 
