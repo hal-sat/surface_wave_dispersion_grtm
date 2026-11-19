@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2024 Harusato Kimura
+// SPDX-FileCopyrightText: Copyright 2024, 2026 Harusato Kimura
 
 #include "surface_wave_dispersion.hpp"
 
@@ -318,11 +318,7 @@ SurfaceWaveDispersion::bisection_sf(double const x_min,
 
 {
   std::function<std::vector<double>(double, double)> target_function;
-  if (target == "love") {
-    // target_function = [this](double phv, double omega) {
-    //   return this->love_secular_function(phv, omega);
-    // };
-  } else if (target == "rayleigh") {
+  if (target == "rayleigh") {
     target_function = [this](double phv, double omega) {
       return this->rayleigh_secular_function(phv, omega);
     };
@@ -345,12 +341,8 @@ SurfaceWaveDispersion::bisection_sf(double const x_min,
 
   double y_l = target_function(x_min, omega)[key];
   double y_r = target_function(x_max, omega)[key];
-  // double y_tot_l = vector_rms(target_function(x_min, omega));
-  // double y_tot_r = vector_rms(target_function(x_max, omega));
   double y_tot_l = vector_rms(target_function(x_min, omega), key_1, key_2);
   double y_tot_r = vector_rms(target_function(x_max, omega), key_1, key_2);
-  // double y_tot_l = vector_rms(target_function(x_min, omega), 2, 4);
-  // double y_tot_r = vector_rms(target_function(x_max, omega), 2, 4);
   double x_l = x_min;
   double x_r = x_max;
 
@@ -359,29 +351,20 @@ SurfaceWaveDispersion::bisection_sf(double const x_min,
     exit(errno);
   }
 
-  // double const ytol =
-  //   std::abs(y_tot_l - y_tot_r) / (x_r - x_l) * this->bisect_acc * 0.1;
   double const ytol =
     std::abs(y_tot_l - y_tot_r) / (x_r - x_l) * this->bisect_acc * 0.1;
-  // double const ytol = 0.001;
-  // std::cerr << "ytol = " << ytol << std::endl;
 
   for (int i = 0; i < this->bisect_max_itr; ++i) {
     double x_c = (x_l + x_r) / 2.0;
 
     if (x_r - x_l < this->bisect_acc) {
-      // if (vector_rms(target_function(x_c, omega)) < ytol) {
       if (vector_rms(target_function(x_c, omega), key_1, key_2) < ytol) {
-        // if (vector_rms(target_function(x_c, omega), 2, 4) < ytol) {
         return x_c;
       }
     }
 
     if (i == this->bisect_max_itr - 1) {
-      // if (not(vector_rms(target_function(x_c, omega)) < ytol)) {
       if (not(vector_rms(target_function(x_c, omega), key_1, key_2) < ytol)) {
-        // if (not(vector_rms(target_function(x_c, omega), 2, 4) <
-        // ytol)) {
         return std::nan("");
       }
       perror("Error -> Bisection No. 2");
@@ -436,20 +419,6 @@ SurfaceWaveDispersion::love_secular_function(double const phv,
       ans = (E21 + E22 * Lambda_u_1_z0 * R_du_i);
       break;
     }
-    // if (i == 0) {
-    //   std::complex<double> E21 = -mu_i * nu_i;
-    //   std::complex<double> E22 = mu_i * nu_i;
-    //   std::complex<double> E11{ 1.0, 0.0 };
-    //   std::complex<double> E12{ 1.0, 0.0 };
-    //   std::complex<double> Lambda_u_1_z0 = std::exp(-nu_i *
-    //   this->thickness[i]); std::complex<double> E_u_1_z0 = std::exp(-nu_i *
-    //   this->thickness[i]); std::complex<double> R_ud_0 = -E22 *
-    //   Lambda_u_1_z0 / E21; ans = 1.0 - R_ud_0 * R_du_i; ans =
-    //   std::complex<double>{ ans.imag(), ans.real() };
-
-    //   // ans = (E21 + E22 * Lambda_u_1_z0 * R_du_i);
-    //   break;
-    // }
     R_du_ip1 = R_du_i;
   }
   return ans;
@@ -783,90 +752,6 @@ SurfaceWaveDispersion::rayleigh_secular_function(double const phv,
   return ans;
 }
 
-// void
-// SurfaceWaveDispersion::calculate_love_phase_velocities()
-// {
-//   this->phvs_love.clear();
-//   double const vs_half_space = this->vs[this->vs.size() - 1];
-//
-//   phvs_love.push_back(std::vector<double>{ this->vs[this->vs.size() - 1]
-//   }); for (size_t i = 1; i < this->freq.size(); ++i) {
-//     std::vector<double> phvs_love_at_freq;
-//
-//     double omega = freq[i] * 2.0 * std::numbers::pi;
-//
-//     // Visualize secular function
-//     std::stringstream fname;
-//     fname << "./tmp/Love_sf_" << std::setw(4) << std::setfill('0') << i;
-//     fname << ".csv";
-//     std::ofstream ouf{ fname.str() };
-//     ouf << "# freq = " << freq[i] << std::endl;
-//     std::cout << "#[Love] freq = " << freq[i] << std::endl;
-//
-//     // Predicte number of modes using Fan et al. (2007), published by
-//     Chinese
-//     // Journal of Geophysics. Note that it depends on frequency.
-//     int const num_of_grid_pts =
-//       (this->predicted_num_of_modes(vs_half_space, omega) + 1) * 10;
-//     // std::cerr << "num_of_grid_pts = " << num_of_grid_pts << std::endl;
-//
-//     // double const min_vs = *std::min_element(this->vs.begin(),
-//     // this->vs.end()); double const dc = (vs_half_space - 0.8 * min_vs) /
-//     // (double)num_of_grid_pts;
-//     double const dc = vs_half_space / (double)num_of_grid_pts;
-//
-//     // Prepare grid points for grid search
-//     std::vector<double> grid_pts;
-//     grid_pts.resize(num_of_grid_pts);
-//     for (int j = 0; j < num_of_grid_pts; ++j) {
-//       grid_pts[j] =
-//         // 0.8 * min_vs +
-//         (double)(j + 1) * dc + this->fluctuation_for_root_search;
-//     }
-//     for (size_t j = 0; j < phvs_love[i - 1].size(); ++j) {
-//       double center = phvs_love[i - 1][j];
-//       // Following an idea presented by Fan et al. (2007).
-//       std::vector<double> additional_grid_pts{ -0.5,    -0.05, -0.005,
-//                                                -0.0005, 0,     0.0005,
-//                                                0.005,   0.05,  0.5 };
-//       for (size_t k = 0; k < additional_grid_pts.size(); ++k) {
-//         additional_grid_pts[k] += center;
-//         grid_pts.push_back(additional_grid_pts[k]);
-//       }
-//     }
-//     std::sort(grid_pts.begin(), grid_pts.end());
-//
-//     // Grid search
-//     double phv_bf = grid_pts[0];
-//     // double phv_bf = 0.8 * min_vs + dc +
-//     this->fluctuation_for_root_search; std::complex<double> bf =
-//     love_secular_function(phv_bf, omega);
-//     // for (int j = 2; j < num_of_grid_pts + 1; ++j) {
-//     for (size_t j = 1; j < grid_pts.size(); ++j) {
-//       // double phv_af =
-//       //   0.8 * min_vs + (double)j * dc +
-//       this->fluctuation_for_root_search; double phv_af = grid_pts[j];
-//       // std::cerr << "c = " << phv_af << std::endl;
-//       std::complex<double> af = love_secular_function(phv_af, omega);
-//       if (bf.real() * af.real() < 0.0) {
-//         std::cerr << "Potentially, there is a root between " << phv_bf
-//                   << " and " << phv_af << std::endl;
-//         double candidate = bisection_sf(phv_bf, phv_af, omega, "love");
-//         if (not std::isnan(candidate) && not std::isinf(candidate) &&
-//             not this->equals_vs_of_a_layer(candidate) &&
-//             not this->equals_vp_of_a_layer(candidate)) {
-//           phvs_love_at_freq.push_back(candidate);
-//         }
-//       }
-//       phv_bf = phv_af;
-//       bf = af;
-//     }
-//     ouf.close();
-//     this->phvs_love.push_back(phvs_love_at_freq);
-//   }
-//   inspect_nmodes_love();
-// }
-
 void
 SurfaceWaveDispersion::calculate_love_power_fraction()
 {
@@ -1023,19 +908,10 @@ SurfaceWaveDispersion::calculate_rayleigh_phase_velocities()
 
     double omega = freq[i] * 2.0 * std::numbers::pi;
 
-    // Visualize secular function
-    // std::stringstream fname;
-    // fname << "./tmp/Rayl_sf_" << std::setw(4) << std::setfill('0') << i;
-    // fname << ".csv";
-    // std::ofstream ouf{ fname.str() };
-    // ouf << "# freq = " << freq[i] << std::endl;
-    // std::cout << "#[Rayl] freq = " << freq[i] << std::endl;
-
     // Predicte number of modes using Fan et al. (2007), published by Chinese
     // Journal of Geophysics. Note that it depends on frequency.
     int const num_of_grid_pts =
       (this->predicted_num_of_modes(vs_half_space, omega) + 1) * this->ngrid;
-    // std::cerr << "num_of_grid_pts = " << num_of_grid_pts << std::endl;
 
     double min_phv_bf = 0.0;
     if (i > 1) {
@@ -1043,23 +919,12 @@ SurfaceWaveDispersion::calculate_rayleigh_phase_velocities()
                                      this->phvs_rayleigh[i - 1].end());
     }
     double const min_vs = *std::min_element(this->vs.begin(), this->vs.end());
-    // double const max_vs = *std::max_element(this->vs.begin(),
-    // this->vs.end());
     double const dc = (vs_half_space - 0.8 * min_vs) / (double)num_of_grid_pts;
-    // double const dc = (vs_half_space - 0.95 * min_vs) /
-    // (double)num_of_grid_pts;
-    // double const dc = (1.5 * max_vs - 0.95 * min_vs) /
-    // (double)num_of_grid_pts;
-    // double const dc =
-    //   (vs_half_space - 0.5 * min_phv_bf) / (double)num_of_grid_pts;
 
     // Prepare grid points for grid search
     std::vector<double> grid_pts;
     grid_pts.resize(num_of_grid_pts);
     for (int j = 0; j < num_of_grid_pts; ++j) {
-      // grid_pts[j] =
-      //   0.5 * min_phv_bf + (double)(j + 1) * dc +
-      //   this->fluctuation_for_root_search;
       grid_pts[j] =
         0.8 * min_vs + (double)(j + 1) * dc + this->fluctuation_for_root_search;
     }
@@ -1087,26 +952,14 @@ SurfaceWaveDispersion::calculate_rayleigh_phase_velocities()
 
     // Grid search
     double phv_bf = grid_pts[0];
-    // double phv_bf = 0.8 * min_vs + dc + this->fluctuation_for_root_search;
     std::vector<double> bf = rayleigh_secular_function(phv_bf, omega);
     for (size_t j = 1; j < grid_pts.size(); ++j) {
       double phv_af = grid_pts[j];
       std::vector<double> af = rayleigh_secular_function(phv_af, omega);
-      // ouf << phv_af << ", " << af[0] << ", " << af[1] << std::endl;
-      // ouf << phv_af << ", ";
-      // for (size_t k = 0; k < af.size() - 1; ++k) {
-      //   ouf << af[k] << ", ";
-      // }
-      // ouf << af[af.size() - 1] << std::endl;
 
       // Check kth secular function
       for (size_t k = 0; k < af.size(); ++k) {
-        // for (size_t k = 0; k < 2; ++k) {
-        // if (bf[k] * af[k] < 0.0) {
         if (bf[k] * af[k] < 0 && std::abs(bf[k] * af[k]) > 1e-8) {
-          // std::cerr << "[Layer: " << k << "] Potentially, it is root (between
-          // "
-          //           << phv_bf << " and " << phv_af << ")" << std::endl;
           double candidate = bisection_sf(phv_bf, phv_af, omega, k, "rayleigh");
           if (not std::isnan(candidate) && not std::isinf(candidate) &&
               not this->equals_vs_of_a_layer(candidate) &&

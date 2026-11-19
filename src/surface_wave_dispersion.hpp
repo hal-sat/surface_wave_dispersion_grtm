@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2024 Harusato Kimura
+// SPDX-FileCopyrightText: Copyright 2024, 2026 Harusato Kimura
 
 #ifndef surface_wave_dispersion_hpp
 #define surface_wave_dispersion_hpp

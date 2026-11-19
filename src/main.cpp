@@ -1,8 +1,10 @@
-// SPDX-FileCopyrightText: Copyright 2024 Harusato Kimura
+// SPDX-FileCopyrightText: Copyright 2024, 2026 Harusato Kimura
 
 #include "surface_wave_dispersion.hpp"
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   if (argc != 6) {
     perror("Error: Invalid argument vector.");
     exit(errno);
@@ -18,7 +20,7 @@ int main(int argc, char **argv) {
 
   // ---
 
-  SurfaceWaveDispersion swd{nf, fmax, df};
+  SurfaceWaveDispersion swd{ nf, fmax, df };
   swd.set_number_of_grids(ngrid);
 
   swd.dump_basic_parameters();
@@ -26,11 +28,6 @@ int main(int argc, char **argv) {
   swd.read_profile(inf);
 
   swd.dump_ground_structure();
-
-  // swd.calculate_love_phase_velocities();
-  // swd.dump_number_of_modes_love();
-  // swd.write_love_results(targ_dir + site_name +
-  // "_results_grtm/Love_phvs.csv");
 
   swd.calculate_rayleigh_phase_velocities();
   swd.dump_number_of_modes_rayleigh();
