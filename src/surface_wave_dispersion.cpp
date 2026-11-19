@@ -191,19 +191,35 @@ SurfaceWaveDispersion::write_love_results(std::string const file_path)
 void
 SurfaceWaveDispersion::write_rayleigh_results(std::string const file_path)
 {
+  this->write_table(file_path, this->phvs_rayleigh, this->nmodes_rayleigh);
+}
+
+void
+SurfaceWaveDispersion::write_rayleigh_power_fraction(
+  std::string const file_path)
+{
+  this->write_table(file_path, this->psds_rayleigh, this->nmodes_rayleigh);
+}
+
+void
+SurfaceWaveDispersion::write_table(
+  std::string const file_path,
+  std::vector<std::vector<double>> const& table,
+  size_t const nmodes)
+{
   std::ofstream ouf{ file_path };
   ouf << std::setprecision(18) << std::scientific;
-  for (size_t i = 0; i < this->phvs_rayleigh.size(); ++i) {
+  for (size_t i = 0; i < table.size(); ++i) {
     ouf << this->freq[i] << ", ";
-    for (size_t j = 0; j < this->nmodes_rayleigh - 1; ++j) {
-      if (j < this->phvs_rayleigh[i].size()) {
-        ouf << this->phvs_rayleigh[i][j] << ", ";
+    for (size_t j = 0; j < nmodes - 1; ++j) {
+      if (j < table[i].size()) {
+        ouf << table[i][j] << ", ";
       } else {
         ouf << std::nan("") << ", ";
       }
     }
-    if (this->nmodes_rayleigh - 1 < this->phvs_rayleigh[i].size()) {
-      ouf << this->phvs_rayleigh[i][nmodes_rayleigh - 1] << std::endl;
+    if (nmodes - 1 < table[i].size()) {
+      ouf << table[i][nmodes - 1] << std::endl;
     } else {
       ouf << std::nan("") << std::endl;
     }
@@ -515,46 +531,23 @@ SurfaceWaveDispersion::is_LVL(int const ind)
   return ans;
 }
 
-std::vector<double>
-SurfaceWaveDispersion::rayleigh_secular_function(double const phv,
-                                                 double const omega)
+void
+SurfaceWaveDispersion::rayleigh_downward_recursion(
+  std::complex<double> const k,
+  double const omega,
+  std::vector<Eigen::Matrix<std::complex<double>, 4, 4>>& vec_E_i,
+  std::vector<Eigen::Matrix<std::complex<double>, 4, 4>>& vec_E_inv_i,
+  std::vector<Eigen::Matrix<std::complex<double>, 2, 2>>& vec_Lambda_kernel_i,
+  std::vector<Eigen::Matrix<std::complex<double>, 2, 2>>& vec_R_du_i)
 {
-  std::complex<double> const k{ omega / phv, 0.0 };
-  std::complex<double> const imunit{ 0.0, 1.0 };
   std::complex<double> const one{ 1.0, 0.0 };
-  std::complex<double> const zero{ 0.0, 0.0 };
-  Eigen::Matrix<std::complex<double>, 2, 2> const Imat_2x2 =
-    Eigen::Matrix<std::complex<double>, 2, 2>::Identity();
-
-  std::vector<double> ans;
 
   int const n_layers = this->thickness.size(); // N + 1
 
-  // Generalized R/T coefficients
-  std::vector<Eigen::Matrix<std::complex<double>, 2, 2>> vec_R_du_i;
-  std::vector<Eigen::Matrix<std::complex<double>, 2, 2>> vec_R_ud_i;
-
-  vec_R_du_i.resize(n_layers);     // R_{du}^{(N + 1)} to R_{du}^{(1)}
-  vec_R_ud_i.resize(n_layers - 1); // R_{ud}^{(0)} to R_{ud}^{(N - 1)}
-  // Note that
-  // vec_R_du_i[i] = R_{du}^{(i + 1)} for i = 0, 1, ..., N
-  // but
-  // vec_R_ud_i[i] = R_{ud}^{(i)} for i = 0, 1, ..., N.
-
-  // Prepare matrices and scalars for each layer.
-  std::vector<Eigen::Matrix<std::complex<double>, 4, 4>> vec_E_i;
-  std::vector<Eigen::Matrix<std::complex<double>, 4, 4>> vec_E_inv_i;
-  std::vector<std::complex<double>> vec_nu_i;
-  std::vector<std::complex<double>> vec_gamma_i;
-  std::vector<std::complex<double>> vec_chi1_i;
-  std::vector<Eigen::Matrix<std::complex<double>, 2, 2>> vec_Lambda_kernel_i;
-
   vec_E_i.resize(n_layers);
   vec_E_inv_i.resize(n_layers);
-  vec_nu_i.resize(n_layers);
-  vec_gamma_i.resize(n_layers);
-  vec_chi1_i.resize(n_layers);
   vec_Lambda_kernel_i.resize(n_layers);
+  vec_R_du_i.resize(n_layers); // R_{du}^{(N + 1)} to R_{du}^{(1)}
 
   // for ind = 1 to N+1 (i.e., for each layer)
   for (int i = 0; i < n_layers; ++i) {
@@ -566,19 +559,15 @@ SurfaceWaveDispersion::rayleigh_secular_function(double const phv,
     std::complex<double> const nu1_i = nu_i / k;
     std::complex<double> const gamma1_i = gamma_i / k;
 
-    vec_nu_i[i] = nu_i;
-    vec_gamma_i[i] = gamma_i;
-    vec_chi1_i[i] = chi1_i;
-
     vec_Lambda_kernel_i[i] = Eigen::Matrix<std::complex<double>, 2, 2>::Zero();
     vec_Lambda_kernel_i[i](0, 0) = std::exp(-gamma_i * this->thickness[i]);
     vec_Lambda_kernel_i[i](1, 1) = std::exp(-nu_i * this->thickness[i]);
 
     // clang-format off
-    vec_E_inv_i[i] << 
+    vec_E_inv_i[i] <<
       -2.0*k*mu_i,       mu_i*chi1_i/gamma1_i,  one/gamma1_i,  -one,
-      -mu_i*chi1_i/nu1_i, 2.0*k*mu_i,           one,           -one/nu1_i, 
-      -2.0*k*mu_i,       -mu_i*chi1_i/gamma1_i, -one/gamma1_i, -one, 
+      -mu_i*chi1_i/nu1_i, 2.0*k*mu_i,           one,           -one/nu1_i,
+      -2.0*k*mu_i,       -mu_i*chi1_i/gamma1_i, -one/gamma1_i, -one,
       -mu_i*chi1_i/nu1_i, -2.0*k*mu_i,          -one,          -one/nu1_i;
     vec_E_inv_i[i] /= (mu_i * (4.0 * k - 2.0 * chi1_i));
     // clang-format on
@@ -627,31 +616,120 @@ SurfaceWaveDispersion::rayleigh_secular_function(double const phv,
 
     // \hat{R}_{du}^{i}
     vec_R_du_i[i] = (W21 + W22 * Lambda_u_ip1_zi * vec_R_du_i[i + 1]) * T_d_i;
+  }
+}
 
-    if (i == 0) {
-      Eigen::Matrix<std::complex<double>, 4, 4> E_i = vec_E_i[0];
-      // Eigen::Matrix<std::complex<double>, 2, 2> E11 = E_i.block<2, 2>(0,
-      // 0); Eigen::Matrix<std::complex<double>, 2, 2> E12 = E_i.block<2,
-      // 2>(0, 2);
-      Eigen::Matrix<std::complex<double>, 2, 2> E21 = E_i.block<2, 2>(2, 0);
-      Eigen::Matrix<std::complex<double>, 2, 2> E22 = E_i.block<2, 2>(2, 2);
+Eigen::Matrix<std::complex<double>, 2, 2>
+SurfaceWaveDispersion::rayleigh_surface_response(std::complex<double> const k,
+                                                 double const omega)
+{
+  std::vector<Eigen::Matrix<std::complex<double>, 4, 4>> vec_E_i;
+  std::vector<Eigen::Matrix<std::complex<double>, 4, 4>> vec_E_inv_i;
+  std::vector<Eigen::Matrix<std::complex<double>, 2, 2>> vec_Lambda_kernel_i;
+  std::vector<Eigen::Matrix<std::complex<double>, 2, 2>> vec_R_du_i;
 
-      Eigen::Matrix<std::complex<double>, 2, 2> Lambda_u_1_z0 =
-        vec_Lambda_kernel_i[i];
+  this->rayleigh_downward_recursion(
+    k, omega, vec_E_i, vec_E_inv_i, vec_Lambda_kernel_i, vec_R_du_i);
 
-      std::complex<double> r_scf0 =
-        (E21 + E22 * Lambda_u_1_z0 * vec_R_du_i[0]).determinant();
-      ans.push_back(r_scf0.real());
-      ans.push_back(r_scf0.imag());
+  // The wavefield in the top layer is expressed by its downgoing
+  // coefficients C_d only (C_u = \hat{R}_{du}^{(1)} C_d). With
+  // L = \Lambda_u^{(1)}(z^{(0)}) \hat{R}_{du}^{(1)}, at the free surface
+  //   displacement = (E11 + E12 L) C_d,
+  //   traction = (E21 + E22 L) C_d.
+  // The determinant of the latter matrix is the secular function F_0.
+  Eigen::Matrix<std::complex<double>, 4, 4> const E_1 = vec_E_i[0];
+  Eigen::Matrix<std::complex<double>, 2, 2> const E11 = E_1.block<2, 2>(0, 0);
+  Eigen::Matrix<std::complex<double>, 2, 2> const E12 = E_1.block<2, 2>(0, 2);
+  Eigen::Matrix<std::complex<double>, 2, 2> const E21 = E_1.block<2, 2>(2, 0);
+  Eigen::Matrix<std::complex<double>, 2, 2> const E22 = E_1.block<2, 2>(2, 2);
 
-      vec_R_ud_i[0] = -E21.inverse() * E22 * Lambda_u_1_z0;
+  Eigen::Matrix<std::complex<double>, 2, 2> const Lambda_R =
+    vec_Lambda_kernel_i[0] * vec_R_du_i[0];
 
-      // std::complex<double> r_scf1 =
-      //   (Imat_2x2 - vec_R_ud_i[0] * vec_R_du_i[0]).determinant();
-      // ans.push_back(r_scf1.real());
-      // ans.push_back(r_scf1.imag());
-      break;
-    }
+  Eigen::Matrix<std::complex<double>, 2, 2> const D = E11 + E12 * Lambda_R;
+  Eigen::Matrix<std::complex<double>, 2, 2> const S = E21 + E22 * Lambda_R;
+
+  return D * S.inverse();
+}
+
+std::complex<double>
+SurfaceWaveDispersion::rayleigh_medium_response(double const phv,
+                                                double const omega,
+                                                double const radius)
+{
+  // Res_{k = k_n} Y_zz(k) = 1 / (2 pi i) * \oint Y_zz(k) dk on the circle
+  // k = k_n + radius * exp(i theta), evaluated by the trapezoidal rule. Y is
+  // analytic around the circle (it is even in nu and gamma of every finite
+  // layer), which makes the rule spectrally accurate and, unlike a finite
+  // difference of the secular function, insensitive to the step size and to
+  // a small error of the root.
+  std::complex<double> const imunit{ 0.0, 1.0 };
+  double const k_n = omega / phv;
+
+  std::complex<double> residue{ 0.0, 0.0 };
+  for (int m = 0; m < this->contour_npts; ++m) {
+    double const theta =
+      2.0 * std::numbers::pi * ((double)m + 0.5) / (double)this->contour_npts;
+    std::complex<double> const dk = radius * std::exp(imunit * theta);
+    residue += dk * this->rayleigh_surface_response(k_n + dk, omega)(1, 1);
+  }
+  residue /= (double)this->contour_npts;
+
+  return k_n * residue;
+}
+
+std::vector<double>
+SurfaceWaveDispersion::rayleigh_secular_function(double const phv,
+                                                 double const omega)
+{
+  std::complex<double> const k{ omega / phv, 0.0 };
+  std::complex<double> const imunit{ 0.0, 1.0 };
+  std::complex<double> const zero{ 0.0, 0.0 };
+  Eigen::Matrix<std::complex<double>, 2, 2> const Imat_2x2 =
+    Eigen::Matrix<std::complex<double>, 2, 2>::Identity();
+
+  std::vector<double> ans;
+
+  int const n_layers = this->thickness.size(); // N + 1
+
+  // Generalized R/T coefficients
+  std::vector<Eigen::Matrix<std::complex<double>, 2, 2>> vec_R_du_i;
+  std::vector<Eigen::Matrix<std::complex<double>, 2, 2>> vec_R_ud_i;
+
+  vec_R_ud_i.resize(n_layers - 1); // R_{ud}^{(0)} to R_{ud}^{(N - 1)}
+  // Note that
+  // vec_R_du_i[i] = R_{du}^{(i + 1)} for i = 0, 1, ..., N
+  // but
+  // vec_R_ud_i[i] = R_{ud}^{(i)} for i = 0, 1, ..., N.
+
+  // Matrices for each layer.
+  std::vector<Eigen::Matrix<std::complex<double>, 4, 4>> vec_E_i;
+  std::vector<Eigen::Matrix<std::complex<double>, 4, 4>> vec_E_inv_i;
+  std::vector<Eigen::Matrix<std::complex<double>, 2, 2>> vec_Lambda_kernel_i;
+
+  // Propagate matrices (downgoing)
+  this->rayleigh_downward_recursion(
+    k, omega, vec_E_i, vec_E_inv_i, vec_Lambda_kernel_i, vec_R_du_i);
+
+  if (n_layers >= 2) {
+    Eigen::Matrix<std::complex<double>, 4, 4> E_i = vec_E_i[0];
+    Eigen::Matrix<std::complex<double>, 2, 2> E21 = E_i.block<2, 2>(2, 0);
+    Eigen::Matrix<std::complex<double>, 2, 2> E22 = E_i.block<2, 2>(2, 2);
+
+    Eigen::Matrix<std::complex<double>, 2, 2> Lambda_u_1_z0 =
+      vec_Lambda_kernel_i[0];
+
+    std::complex<double> r_scf0 =
+      (E21 + E22 * Lambda_u_1_z0 * vec_R_du_i[0]).determinant();
+    ans.push_back(r_scf0.real());
+    ans.push_back(r_scf0.imag());
+
+    vec_R_ud_i[0] = -E21.inverse() * E22 * Lambda_u_1_z0;
+
+    // std::complex<double> r_scf1 =
+    //   (Imat_2x2 - vec_R_ud_i[0] * vec_R_du_i[0]).determinant();
+    // ans.push_back(r_scf1.real());
+    // ans.push_back(r_scf1.imag());
   }
 
   if (this->LVL_indices.empty()) {
@@ -799,9 +877,82 @@ SurfaceWaveDispersion::calculate_love_power_fraction()
 void
 SurfaceWaveDispersion::calculate_rayleigh_power_fraction()
 {
-  std::cerr
-    << "calculate_rayleigh_power_fraction() has not been implemented yet!"
-    << std::endl;
+  // Power of each mode relative to that of the 0th mode, following the
+  // Thomson-Haskell implementation: (A_j^2 c_j) / (A_0^2 c_0), where A is the
+  // medium response (Harkrider, 1964) for a vertical point force and the
+  // vertical displacement at the free surface. Here A is evaluated as the
+  // residue of the surface response; see rayleigh_medium_response().
+  this->psds_rayleigh.clear();
+
+  size_t n_unresolved = 0;
+  size_t n_invalid_0th = 0;
+
+  for (size_t i = 0; i < this->phvs_rayleigh.size(); ++i) {
+    std::vector<double> const& phvs_at_freq = this->phvs_rayleigh[i];
+    std::vector<double> psds_at_freq(phvs_at_freq.size(), std::nan(""));
+
+    // freq[0] = 0: the medium response is not defined.
+    if (i == 0) {
+      this->psds_rayleigh.push_back(psds_at_freq);
+      continue;
+    }
+
+    double const omega = this->freq[i] * 2.0 * std::numbers::pi;
+
+    double power_0th = std::nan("");
+    for (size_t j = 0; j < phvs_at_freq.size(); ++j) {
+      double const phv = phvs_at_freq[j];
+      double const k_n = omega / phv;
+
+      // The circle must not enclose the other roots.
+      double radius = this->contour_rel_radius * k_n;
+      for (size_t l = 0; l < phvs_at_freq.size(); ++l) {
+        if (l != j) {
+          radius = std::min(radius,
+                            this->contour_gap_fraction *
+                              std::abs(omega / phvs_at_freq[l] - k_n));
+        }
+      }
+
+      // The circle must enclose the true root, whose position is known only
+      // within bisect_acc / 2 in phase velocity. Give up if two roots are too
+      // close to each other to guarantee that.
+      double const k_uncertainty = k_n * 0.5 * this->bisect_acc / phv;
+      if (not(radius > 4.0 * k_uncertainty)) {
+        ++n_unresolved;
+        continue;
+      }
+
+      std::complex<double> const medium_response =
+        this->rayleigh_medium_response(phv, omega, radius);
+      double const power = std::norm(medium_response) * phv;
+
+      if (j == 0) {
+        power_0th = power;
+      }
+      psds_at_freq[j] = power / power_0th;
+    }
+
+    if (not phvs_at_freq.empty() &&
+        not(std::isfinite(power_0th) && power_0th > 0.0)) {
+      ++n_invalid_0th;
+    }
+    this->psds_rayleigh.push_back(psds_at_freq);
+  }
+
+  if (n_unresolved > 0) {
+    std::cerr << "[Rayl power fraction] " << n_unresolved
+              << " mode(s) were too close to a neighboring root to be "
+                 "resolved (written as nan)."
+              << std::endl;
+  }
+  if (n_invalid_0th > 0) {
+    std::cerr << "[Rayl power fraction] The power of the 0th mode was zero or "
+                 "not available at "
+              << n_invalid_0th
+              << " frequency point(s); the ratios there are not meaningful."
+              << std::endl;
+  }
 }
 
 double

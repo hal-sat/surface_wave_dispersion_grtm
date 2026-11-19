@@ -1,0 +1,4 @@
+nf = 250 points
+fmax = 25.0 Hz
+df = 0.099601593625498 Hz
+ngrid = 100 points

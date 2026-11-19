@@ -33,6 +33,10 @@ private:
   std::vector<double> freq;
   std::vector<std::vector<double>> phvs_love;
   std::vector<std::vector<double>> phvs_rayleigh;
+  std::vector<std::vector<double>> psds_rayleigh;
+  // psds_rayleigh[i][j]: power of the jth mode relative to that of the 0th
+  // mode at freq[i] (vertical point force and vertical displacement at the
+  // free surface).
   size_t nmodes_love = 1;
   size_t nmodes_rayleigh = 1;
   double fluctuation_for_root_search = 1e-5;
@@ -54,6 +58,14 @@ private:
   int const bisect_max_itr = 100;
   double const bisect_acc = 1e-3;
 
+  // Parameters of the contour integration around each root in the complex
+  // wavenumber plane (used for the medium response). The radius of the
+  // circle is the smaller of contour_rel_radius * k and
+  // contour_gap_fraction * (distance to the nearest other root).
+  int const contour_npts = 32;
+  double const contour_rel_radius = 2e-4;
+  double const contour_gap_fraction = 0.25;
+
   std::vector<int> LVL_indices;
   // List of layer indices that correspond to sandwitched low velocity
   // layers (LVLs).
@@ -72,6 +84,35 @@ private:
                                                 double const omega);
   std::complex<double> love_secular_function(double const phv,
                                              double const omega);
+
+  // Prepares E, E^{-1} and the Lambda kernel of every layer and computes the
+  // generalized reflection coefficients \hat{R}_{du}^{(j)} (j = N + 1 to 1)
+  // for a (possibly complex) horizontal wavenumber k.
+  // vec_R_du_i[i] = \hat{R}_{du}^{(i + 1)}.
+  void rayleigh_downward_recursion(
+    std::complex<double> const k,
+    double const omega,
+    std::vector<Eigen::Matrix<std::complex<double>, 4, 4>>& vec_E_i,
+    std::vector<Eigen::Matrix<std::complex<double>, 4, 4>>& vec_E_inv_i,
+    std::vector<Eigen::Matrix<std::complex<double>, 2, 2>>& vec_Lambda_kernel_i,
+    std::vector<Eigen::Matrix<std::complex<double>, 2, 2>>& vec_R_du_i);
+
+  // Surface response Y(omega, k): (displacement at the free surface) =
+  // Y * (traction at the free surface). Rows and columns are ordered as
+  // (horizontal, vertical). Its poles are the Rayleigh-wave modes.
+  Eigen::Matrix<std::complex<double>, 2, 2> rayleigh_surface_response(
+    std::complex<double> const k,
+    double const omega);
+
+  // Medium response A = k_n * Res_{k = k_n} Y_zz(k) of the mode whose root is
+  // k_n = omega / phv, evaluated by a contour integral of given radius.
+  std::complex<double> rayleigh_medium_response(double const phv,
+                                                double const omega,
+                                                double const radius);
+
+  void write_table(std::string const file_path,
+                   std::vector<std::vector<double>> const& table,
+                   size_t const nmodes);
 
   double bisection_sf(double const x_min,
                       double const x_max,
@@ -136,6 +177,7 @@ public:
 
   void write_love_results(std::string const file_path);
   void write_rayleigh_results(std::string const file_path);
+  void write_rayleigh_power_fraction(std::string const file_path);
 
   void read_profile(std::string const path, char const delimiter = ',');
   void calculate_love_phase_velocities();

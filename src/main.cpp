@@ -35,6 +35,8 @@ int main(int argc, char **argv) {
   swd.calculate_rayleigh_phase_velocities();
   swd.dump_number_of_modes_rayleigh();
   swd.write_rayleigh_results(resdir + "Rayl_phvs.csv");
+  swd.calculate_rayleigh_power_fraction();
+  swd.write_rayleigh_power_fraction(resdir + "Rayl_psds.csv");
   swd.dump_ground_structure();
   swd.dump_LVL_indices();
 }
