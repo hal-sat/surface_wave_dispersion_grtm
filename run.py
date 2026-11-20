@@ -54,6 +54,13 @@ parser.add_argument(
     help="Number of grid points per predicted mode for the root search "
     "along the phase velocity.",
 )
+parser.add_argument(
+    "-nmr",
+    "--no-medium-response",
+    action="store_true",
+    help="Do not compute the medium responses and the relative powers of an "
+    "elastic medium (only the phase velocities are computed).",
+)
 # Only for a profile with Qp and Qs (viscoelastic medium)
 parser.add_argument(
     "-el",
@@ -164,6 +171,7 @@ argv = [
     str(fmin),
     "none" if f_ref is None else str(f_ref),
     "elastic" if args.elastic else "auto",
+    "no-response" if args.no_medium_response else "response",
 ]
 result = subprocess.run(argv)
 sys.exit(result.returncode)

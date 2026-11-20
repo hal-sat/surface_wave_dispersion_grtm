@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber main"] 1795184888.86028 "main.bcf" "main.bbl" "main" 1795186296.21231 0
-  "main.bcf" 1795186295.88714 108786 5059bf5f814a5335597e6ef33c7f5f24 "lualatex"
+["biber main"] 1795184888.86028 "main.bcf" "main.bbl" "main" 1795187491.30252 0
+  "main.bcf" 1795187490.96318 108786 5059bf5f814a5335597e6ef33c7f5f24 "lualatex"
   "ref.bib" 1795184871.55187 24155 99444cefe72cffafec45d716424cd899 ""
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["lualatex"] 1795186292.44939 "main.tex" "main.pdf" "main" 1795186296.21254 0
+["lualatex"] 1795187487.39989 "main.tex" "main.pdf" "main" 1795187491.30277 0
   "/home/kimura/.fonts/Helvetica_Neue/HelveticaNeue.ttc" 1756170861.56735 4472088 e3a027e9bfe19a5f3072ccd4efa3c40f ""
   "/home/kimura/.fonts/STIXTwoMath/STIXTwoMath-Regular.ttf" 1756170883.7188 1518116 97f686351d834cd02f3dd677139e58bb ""
   "/home/kimura/.fonts/STIXTwoMath/STIXTwoText-Italic.ttf" 1756170883.7318 424488 4964440f3addf7b8c7e5ad766a20b46e ""
@@ -306,10 +306,10 @@
   "/usr/share/texmf/fonts/opentype/public/lm/lmmono10-regular.otf" 1255129361 64684 15a2082c8e31f411875a86ea2d29a0ee ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1758867741.73307 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/luahbtex/lualatex.fmt" 1758867812 12241934 73365397f6077927324fafaf84ff9779 ""
-  "main.aux" 1795186295.88414 4797 f23d9379222370b2ed37128e06188f95 "lualatex"
+  "main.aux" 1795187490.96118 4797 e0a0a412447c88dba1b9206d960c6ff4 "lualatex"
   "main.bbl" 1795184889.30351 15284 dd76e4ae1ef567090944a6d0fca1565c "biber main"
-  "main.run.xml" 1795186295.8884 2344 6ca4be9a9249ff0ae390949bccb2a9b4 "lualatex"
-  "main.tex" 1795186292.27112 28031 4feedfc83ebcea5089674fb66e8ee48b ""
+  "main.run.xml" 1795187490.96477 2344 6ca4be9a9249ff0ae390949bccb2a9b4 "lualatex"
+  "main.tex" 1795187483.40666 28516 45245b2df3cb38ecc5d920e12161190b ""
   (generated)
   "main.aux"
   "main.bcf"

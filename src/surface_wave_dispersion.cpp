@@ -470,15 +470,13 @@ SurfaceWaveDispersion::vector_rms(std::vector<double> const& vec,
 double
 SurfaceWaveDispersion::bisection_sf(double const x_min,
                                     double const x_max,
+                                    std::vector<double> const& v_min,
+                                    std::vector<double> const& v_max,
                                     double const omega,
                                     int const key,
                                     Medium const& medium)
 
 {
-  auto const target_function = [this, &medium](double phv, double omega) {
-    return this->rayleigh_secular_function(phv, omega, medium);
-  };
-
   // key for rms calculation
   int key_1, key_2;
   if (key % 2 == 0) {
@@ -489,10 +487,10 @@ SurfaceWaveDispersion::bisection_sf(double const x_min,
     key_2 = key;
   }
 
-  double y_l = target_function(x_min, omega)[key];
-  double y_r = target_function(x_max, omega)[key];
-  double y_tot_l = vector_rms(target_function(x_min, omega), key_1, key_2);
-  double y_tot_r = vector_rms(target_function(x_max, omega), key_1, key_2);
+  double y_l = v_min[key];
+  double y_r = v_max[key];
+  double y_tot_l = vector_rms(v_min, key_1, key_2);
+  double y_tot_r = vector_rms(v_max, key_1, key_2);
   double x_l = x_min;
   double x_r = x_max;
 
@@ -504,29 +502,63 @@ SurfaceWaveDispersion::bisection_sf(double const x_min,
   double const ytol =
     std::abs(y_tot_l - y_tot_r) / (x_r - x_l) * this->bisect_acc * 0.1;
 
+  // rms at both ends of the current interval.
+  double rms_l = y_tot_l;
+  double rms_r = y_tot_r;
+  // Width of the interval and sum of the rms at its ends when the width
+  // fell below bisect_acc.
+  double width_ref = std::nan("");
+  double rms_sum_ref = std::nan("");
+
   for (int i = 0; i < this->bisect_max_itr; ++i) {
     double x_c = (x_l + x_r) / 2.0;
+    std::vector<double> const v_c =
+      this->rayleigh_secular_function(x_c, omega, medium);
+    double const rms_c = vector_rms(v_c, key_1, key_2);
 
     if (x_r - x_l < this->bisect_acc) {
-      if (vector_rms(target_function(x_c, omega), key_1, key_2) < ytol) {
+      if (rms_c < ytol) {
         return x_c;
+      }
+
+      // The sign also changes at a pole or at a jump of the secular
+      // function, where it does not vanish. Around a root the rms is
+      // proportional to the distance to the root, so that the rms at the
+      // middle of an interval is at most half the sum of those at its ends
+      // and it halves with the width. A value far above that tells that
+      // there is no root in the interval.
+      if (std::isnan(width_ref)) {
+        width_ref = x_r - x_l;
+        rms_sum_ref = rms_l + rms_r;
+      }
+      if (rms_c >
+          this->bisect_reject_factor * rms_sum_ref * (x_r - x_l) / width_ref) {
+        return std::nan("");
+      }
+
+      // The interval cannot be divided any more; further iterations would
+      // repeat this one.
+      if (not(x_l < x_c && x_c < x_r)) {
+        return std::nan("");
       }
     }
 
     if (i == this->bisect_max_itr - 1) {
-      if (not(vector_rms(target_function(x_c, omega), key_1, key_2) < ytol)) {
+      if (not(rms_c < ytol)) {
         return std::nan("");
       }
       perror("Error -> Bisection No. 2");
       exit(errno);
     }
 
-    double y_c = target_function(x_c, omega)[key];
-    y_l = target_function(x_l, omega)[key];
+    double y_c = v_c[key];
     if (y_c * y_l <= 0.0) {
       x_r = x_c;
+      rms_r = rms_c;
     } else {
       x_l = x_c;
+      y_l = y_c;
+      rms_l = rms_c;
     }
   }
 
@@ -1078,7 +1110,8 @@ SurfaceWaveDispersion::calculate_rayleigh_phase_velocities()
       // Check kth secular function
       for (size_t k = 0; k < af.size(); ++k) {
         if (bf[k] * af[k] < 0 && std::abs(bf[k] * af[k]) > 1e-8) {
-          double candidate = bisection_sf(phv_bf, phv_af, omega, k, medium);
+          double candidate =
+            bisection_sf(phv_bf, phv_af, bf, af, omega, k, medium);
           if (not std::isnan(candidate) && not std::isinf(candidate) &&
               not this->equals_vs_of_a_layer(candidate, medium) &&
               not this->equals_vp_of_a_layer(candidate, medium)) {
@@ -1102,7 +1135,12 @@ SurfaceWaveDispersion::calculate_rayleigh_phase_velocities()
     } else {
       std::cerr << "Something went wrong in low frequency region." << std::endl;
       std::cerr << "Increasing ngrid might resolve the problem." << std::endl;
-      this->phvs_rayleigh[0][0] = this->phvs_rayleigh[1][0];
+      if (not this->phvs_rayleigh[1].empty()) {
+        this->phvs_rayleigh[0][0] = this->phvs_rayleigh[1][0];
+      } else {
+        // No root was found at the first frequency.
+        this->phvs_rayleigh[0][0] = std::nan("");
+      }
     }
   }
   inspect_nmodes_rayleigh();

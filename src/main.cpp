@@ -4,19 +4,21 @@
 #include "surface_wave_dispersion.hpp"
 
 // Usage: main <profile> <result directory> <nf> <fmax> <ngrid>
-//             [<fmin> <f0> [<medium>]]
+//             [<fmin> <f0> [<medium> [<response>]]]
 // <f0> is the reference frequency (Hz) of the velocities in the profile or
 // "none" (frequency-independent complex velocities).
 // <medium> is "auto" (viscoelastic if Qp and Qs are given in the profile) or
 // "elastic" (Qp and Qs are ignored).
+// <response> is "response" (the medium responses and the relative powers of
+// an elastic medium are computed) or "no-response" (they are skipped).
 int
 main(int argc, char** argv)
 {
-  if (argc != 6 && argc != 8 && argc != 9) {
+  if (argc != 6 && argc != 8 && argc != 9 && argc != 10) {
     std::cerr << "Error: Invalid argument vector." << std::endl;
     std::cerr << "Usage: " << argv[0]
               << " <profile> <result directory> <nf> <fmax> <ngrid> "
-                 "[<fmin> <f0> [<medium>]]"
+                 "[<fmin> <f0> [<medium> [<response>]]]"
               << std::endl;
     return EXIT_FAILURE;
   }
@@ -38,12 +40,24 @@ main(int argc, char** argv)
       f_ref = std::stod(argv[7]);
     }
   }
-  if (argc == 9) {
+  if (argc >= 9) {
     std::string const medium = argv[8];
     if (medium == "elastic") {
       ignore_attenuation = true;
     } else if (medium != "auto") {
       std::cerr << "Error: <medium> must be either \"auto\" or \"elastic\"."
+                << std::endl;
+      return EXIT_FAILURE;
+    }
+  }
+  bool compute_response = true;
+  if (argc == 10) {
+    std::string const response = argv[9];
+    if (response == "no-response") {
+      compute_response = false;
+    } else if (response != "response") {
+      std::cerr << "Error: <response> must be either \"response\" or "
+                   "\"no-response\"."
                 << std::endl;
       return EXIT_FAILURE;
     }
@@ -103,9 +117,11 @@ main(int argc, char** argv)
     // powers.
     swd.dump_number_of_modes_rayleigh();
     swd.write_rayleigh_results(resdir + "Rayl_phvs.csv");
-    swd.calculate_rayleigh_power_fraction();
-    swd.write_rayleigh_medium_response(resdir + "Rayl_medium_responses.csv");
-    swd.write_rayleigh_power_fraction(resdir + "Rayl_psds.csv");
+    if (compute_response) {
+      swd.calculate_rayleigh_power_fraction();
+      swd.write_rayleigh_medium_response(resdir + "Rayl_medium_responses.csv");
+      swd.write_rayleigh_power_fraction(resdir + "Rayl_psds.csv");
+    }
   }
   swd.dump_ground_structure();
   swd.dump_LVL_indices();

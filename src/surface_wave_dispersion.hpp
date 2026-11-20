@@ -105,6 +105,11 @@ private:
 
   int const bisect_max_itr = 100;
   double const bisect_acc = 1e-3;
+  // A sign change is regarded as not being a root (a pole or a jump of the
+  // secular function) if the secular function at the middle of the interval
+  // is larger than bisect_reject_factor times what a root allows; see
+  // bisection_sf().
+  double const bisect_reject_factor = 100.0;
 
   // Parameters of the contour integration around each root in the complex
   // wavenumber plane (used for the medium response). The radius of the
@@ -195,8 +200,11 @@ private:
                    std::vector<std::vector<double>> const& table,
                    size_t const nmodes);
 
+  // v_min and v_max are rayleigh_secular_function() at x_min and x_max.
   double bisection_sf(double const x_min,
                       double const x_max,
+                      std::vector<double> const& v_min,
+                      std::vector<double> const& v_max,
                       double const omega,
                       int const key,
                       Medium const& medium);

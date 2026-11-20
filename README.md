@@ -33,6 +33,9 @@ The results are written to `<name>_results_grtm/` next to the input file
   `fmin + (fmax - fmin) / nf * i` for `i = 0` to `nf`
 - `-lbf`, `-ubf`: lower and upper bounds of frequency `fmin` and `fmax` in Hz
 - `-ngp`: number of grid points per predicted mode for the root search
+- `-nmr`: do not compute the medium responses and the relative powers
+  (elastic medium only), which saves time when only the phase velocities are
+  needed
 - `-f0`: reference frequency in Hz (viscoelastic medium only; see below)
 - `-el`: ignore Qp and Qs of the profile and treat the medium as elastic
 
