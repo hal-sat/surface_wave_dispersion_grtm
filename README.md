@@ -1,8 +1,10 @@
 # surface_wave_dispersion_grtm
 
-Phase velocities and relative modal powers of Rayleigh waves in a layered
-elastic half-space, computed by the generalized reflection/transmission (R/T)
-coefficient method. The theory is summarized in `note/main.pdf`.
+Phase velocities of Rayleigh waves in a layered half-space, computed by the
+generalized reflection/transmission (R/T) coefficient method. For an elastic
+medium the relative modal powers are also computed, and for a viscoelastic
+medium (a profile with Qp and Qs) the attenuation coefficients are computed
+instead. The theory is summarized in `note/main.pdf`.
 
 ## Requirements
 
@@ -22,9 +24,14 @@ python3 run.py -if demo/OrgM1.profile
 ```
 
 The results are written to `<name>_results_grtm/` next to the input file
-(`-od` changes the directory). Other options: `-nfp` (number of frequency
-points), `-ubf` (upper bound of frequency in Hz) and `-ngp` (number of grid
-points for the root search).
+(`-od` changes the directory). Other options:
+
+- `-nfp`: number of frequency intervals `nf`; the frequencies are
+  `fmin + (fmax - fmin) / nf * i` for `i = 0` to `nf`
+- `-lbf`, `-ubf`: lower and upper bounds of frequency `fmin` and `fmax` in Hz
+- `-ngp`: number of grid points per predicted mode for the root search
+- `-f0`: reference frequency in Hz (viscoelastic medium only; see below)
+- `-el`: ignore Qp and Qs of the profile and treat the medium as elastic
 
 ## Input
 
@@ -36,14 +43,39 @@ One line per layer, from the top; the last line is the half-space.
 infty, 1500, 700, 1.8
 ```
 
+For a viscoelastic medium, add Qp and Qs to every layer (Q <= 0 means that
+the layer is elastic):
+
+```
+# Thickness (m), Vp (m/s), Vs (m/s), rho (t/m^3), Qp, Qs
+40, 800, 300, 1.5, 10, 10
+infty, 1500, 700, 1.8, 30, 30
+```
+
+```bash
+python3 run.py -if demo/OrgM1_viscoelastic.profile
+```
+
+With `-el`, Qp and Qs are ignored and the medium is treated as elastic, i.e.,
+the result is that of the profile without Qp and Qs.
+
+By default the complex velocities are frequency independent. With `-f0`, Vp
+and Vs of the profile are regarded as the phase velocities at that frequency
+and the causal constant-Q model of Kjartansson (1979) is used, so that the
+velocities depend on the frequency.
+
 ## Output
 
 - `Rayl_phvs.csv`: frequency (Hz) followed by the phase velocity of each mode
-- `Rayl_psds.csv`: frequency (Hz) followed by the power of each mode relative
-  to that of the mode with the lowest phase velocity
+- `Rayl_psds.csv` (elastic medium only): frequency (Hz) followed by the power
+  of each mode relative to that of the mode with the lowest phase velocity
+- `Rayl_attens.csv` (viscoelastic medium only): frequency (Hz) followed by the
+  attenuation coefficient (1/m) of each mode
 - `employed_params.txt`: parameters used for the computation
 
-Modes that do not exist at a frequency are written as `nan`.
+Modes are numbered in ascending order of the phase velocity at each frequency.
+Modes that do not exist at a frequency, or whose root was not found, are
+written as `nan`.
 
 ## License
 

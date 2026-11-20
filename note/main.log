@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.17.0 (TeX Live 2023/Debian)  (format=lualatex 2025.9.26)  19 NOV 2026 15:18
+This is LuaHBTeX, Version 1.17.0 (TeX Live 2023/Debian)  (format=lualatex 2025.9.26)  20 NOV 2026 23:28
  restricted system commands enabled.
 **main.tex
 (./main.tex
@@ -1768,48 +1768,52 @@ r.luc) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    Font shape `JT3/NotoSerifCJKJP(0)/b/n' will be
-(Font)              scaled to size 11.54663pt on input line 205.
+(Font)              scaled to size 11.54663pt on input line 206.
 LaTeX Font Info:    Font shape `JY3/NotoSerifCJKJP(0)/b/n' will be
-(Font)              scaled to size 11.54663pt on input line 205.
+(Font)              scaled to size 11.54663pt on input line 206.
 LaTeX Font Info:    Font shape `JT3/gt/b/n' in size <12> not available
-(Font)              Font shape `JT3/gt/m/n' tried instead on input line 205.
+(Font)              Font shape `JT3/gt/m/n' tried instead on input line 206.
 LaTeX Font Info:    Font shape `JT3/gt/m/n' will be
-(Font)              scaled to size 11.54663pt on input line 205.
+(Font)              scaled to size 11.54663pt on input line 206.
 LaTeX Font Info:    Font shape `JY3/gt/b/n' in size <12> not available
-(Font)              Font shape `JY3/gt/m/n' tried instead on input line 205.
+(Font)              Font shape `JY3/gt/m/n' tried instead on input line 206.
 LaTeX Font Info:    Font shape `JY3/gt/m/n' will be
-(Font)              scaled to size 11.54663pt on input line 205.
+(Font)              scaled to size 11.54663pt on input line 206.
  [2] [3] [4] [5]
+[6]
 LaTeX Font Info:    Font shape `JT3/gt/m/n' will be
-(Font)              scaled to size 9.6222pt on input line 534.
+(Font)              scaled to size 9.6222pt on input line 588.
 LaTeX Font Info:    Font shape `JY3/gt/m/n' will be
-(Font)              scaled to size 9.6222pt on input line 534.
+(Font)              scaled to size 9.6222pt on input line 588.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 534.
+(Font)              No change on input line 588.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 534.
+(Font)              No change on input line 588.
 LaTeX Font Info:    Kanji font shape `JY3/NotoSerifCJKJP(0)/m/sc' undefined
-(Font)              No change on input line 534.
+(Font)              No change on input line 588.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 534.
+(Font)              No change on input line 588.
 LaTeX Font Info:    Kanji font shape `JY3/NotoSerifCJKJP(0)/m/sc' undefined
-(Font)              No change on input line 534.
+(Font)              No change on input line 588.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 534.
+(Font)              No change on input line 588.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 534.
+(Font)              No change on input line 588.
 LaTeX Font Info:    Kanji font shape `JY3/NotoSerifCJKJP(0)/m/sc' undefined
-(Font)              No change on input line 534.
+(Font)              No change on input line 588.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 534.
+(Font)              No change on input line 588.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 534.
-LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 534.
+(Font)              No change on input line 588.
 LaTeX Font Info:    Kanji font shape `JY3/NotoSerifCJKJP(0)/m/sc' undefined
-(Font)              No change on input line 534.
-
-[6] (./main.aux)
+(Font)              No change on input line 588.
+LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
+(Font)              No change on input line 588.
+LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
+(Font)              No change on input line 588.
+LaTeX Font Info:    Kanji font shape `JY3/NotoSerifCJKJP(0)/m/sc' undefined
+(Font)              No change on input line 588.
+ [7] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -1820,15 +1824,15 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 )
 
 Here is how much of LuaTeX's memory you used:
- 34772 strings out of 476553
- 195703,1977958 words of node,token memory allocated
+ 34777 strings out of 476553
+ 244630,1977958 words of node,token memory allocated
  1328 words of node memory still in use:
    11 hlist, 2 vlist, 5 rule, 2 glue, 4 kern, 8 sub_mlist, 1 glyph, 279 attribut
 e, 69 glue_spec, 37 attribute_list, 2 write, 13 user_defined nodes
-   avail lists: 1:40,2:45849,3:211,4:796,5:923,6:47,7:7551,8:91,9:1604,10:10,11:
-385
- 55995 multiletter control sequences out of 65536+600000
- 131 fonts using 232850071 bytes
+   avail lists: 1:41,2:56718,3:245,4:796,5:930,6:47,7:9094,8:91,9:1604,10:12,11:
+479
+ 56000 multiletter control sequences out of 65536+600000
+ 131 fonts using 232850151 bytes
  106i,17n,101p,1754b,1677s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/kimura/.fonts/STIXTwoMath/STIXTwoText-Italic.ttf></home/kimura/.fonts/STI
 XTwoMath/STIXTwoText-Regular.ttf></home/kimura/.fonts/STIXTwoMath/STIXTwoMath-Re
@@ -1836,10 +1840,10 @@ gular.ttf></home/kimura/.fonts/STIXTwoMath/STIXTwoMath-Regular.ttf></home/kimura
 /.fonts/STIXTwoMath/STIXTwoMath-Regular.ttf></usr/share/texmf/fonts/opentype/pub
 lic/lm/lmmono10-regular.otf></home/kimura/.fonts/Helvetica_Neue/HelveticaNeue.tt
 c></home/kimura/.fonts/STIXTwoMath/STIXTwoText-Regular.ttf>
-Output written on main.pdf (6 pages, 158347 bytes).
+Output written on main.pdf (7 pages, 169381 bytes).
 
-PDF statistics: 82 PDF objects out of 1000 (max. 8388607)
- 49 compressed objects within 1 object stream
+PDF statistics: 85 PDF objects out of 1000 (max. 8388607)
+ 51 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 131072)
  16 words of extra memory for PDF output out of 10000 (max. 100000000)
 

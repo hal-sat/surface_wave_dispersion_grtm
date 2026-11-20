@@ -263,6 +263,37 @@
       \field{pages}{1074\bibrangedash 1081}
       \range{pages}{8}
     \endentry
+    \entry{kjartansson1979}{article}{}
+      \name{author}{1}{}{%
+        {{hash=fbf9be147d0aa0f8edc390424c24ca84}{%
+           family={Kjartansson},
+           familyi={K\bibinitperiod},
+           given={Einar},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{fbf9be147d0aa0f8edc390424c24ca84}
+      \strng{fullhash}{fbf9be147d0aa0f8edc390424c24ca84}
+      \strng{bibnamehash}{fbf9be147d0aa0f8edc390424c24ca84}
+      \strng{authorbibnamehash}{fbf9be147d0aa0f8edc390424c24ca84}
+      \strng{authornamehash}{fbf9be147d0aa0f8edc390424c24ca84}
+      \strng{authorfullhash}{fbf9be147d0aa0f8edc390424c24ca84}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Geophysical Research: Solid Earth}
+      \field{number}{B9}
+      \field{title}{Constant {Q}-wave propagation and attenuation}
+      \field{volume}{84}
+      \field{year}{1979}
+      \field{pages}{4737\bibrangedash 4748}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1029/JB084iB09p04737
+      \endverb
+    \endentry
     \entry{wu2016}{article}{}
       \name{author}{2}{}{%
         {{hash=4e31f6e2351bdd7652825d00350a02fd}{%

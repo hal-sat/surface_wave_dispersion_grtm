@@ -101,8 +101,9 @@
 This note summarizes the theory behind the program in this repository.
 It covers
 (i) the generalized reflection/transmission (R/T) coefficient method \parencite{chen1993} for the phase velocities of Rayleigh waves in a stack of homogeneous, isotropic and elastic layers over a half-space,
-(ii) the family of secular functions used for models with low-velocity layers \parencite{he2006,wu2016,yuan2024}, and
-(iii) the medium response and the relative power of the modes, which are evaluated from the residue of the surface response.
+(ii) the family of secular functions used for models with low-velocity layers \parencite{he2006,wu2016,yuan2024},
+(iii) the medium response and the relative power of the modes, which are evaluated from the residue of the surface response, and
+(iv) the phase velocities and attenuation coefficients in viscoelastic layers, which are obtained from the complex roots of the same secular functions.
 The matrices below are written in the same form as in \texttt{src/surface\_wave\_dispersion.cpp}.
 
 \section{Model and notation}
@@ -484,6 +485,59 @@ The program outputs the power relative to that of the mode with the lowest phase
 which is the same quantity as that of the Thomson--Haskell implementation.
 For two test models (one layer over a half-space, and three layers including an LVL over a half-space), the two implementations agreed up to $25\,\symrm{Hz}$ with a median relative difference of about $10^{-7}$.
 The ratio is not meaningful if the $0$th mode is trapped in an LVL and has a vanishing power at the surface.
+
+\section{Viscoelastic medium}
+
+If $Q_P^{(i)}$ and $Q_S^{(i)}$ are given in the input, the attenuation coefficients of the modes are computed instead of the relative powers.
+
+\subsection{Complex velocities}
+
+By the correspondence principle, all the expressions above hold for a viscoelastic medium if $\alpha^{(i)}$, $\beta^{(i)}$ and $\mu^{(i)}$ are replaced with complex values.
+They are given by the constant-$Q$ model of \textcite{kjartansson1979}, in which a complex modulus $M$ depends on the frequency as
+\begin{align}
+  M(\omega) = M_0 \left( \frac{\symrm{i} \omega}{\omega_0} \right)^{2 \eta},
+  \qquad
+  \eta = \frac{1}{\pi} \arctan \frac{1}{Q}.
+\end{align}
+Let $c_0$ be the phase velocity at the reference frequency $\omega_0$, which is the velocity written in the input.
+The complex velocity $\tilde{c} = \sqrt{M / \rho}$ at $\omega_0$ is then
+\begin{align}
+  \tilde{c}(\omega_0)
+  = c_0 \cos \frac{\pi \eta}{2}\, \symrm{e}^{\symrm{i} \pi \eta / 2}
+  = c_0\, \frac{1 + s + \symrm{i} / Q}{2 s},
+  \qquad
+  s = \sqrt{1 + Q^{-2}},
+\end{align}
+and both the phase velocity and the complex velocity are proportional to $(\omega / \omega_0)^{\eta}$.
+This is applied to the P wave with $Q_P$ and to the S wave with $Q_S$ independently, and $\mu = \rho \tilde{\beta}^2$.
+The imaginary part of $\tilde{c}$ is positive because the time dependence is $\symrm{e}^{\symrm{i} \omega t}$; unlike the elastic case, the sign of the time dependence matters here.
+A layer with $Q \leq 0$ is treated as elastic.
+
+In the code, $\tilde{c}(\omega_0)$ is used at all the frequencies unless the reference frequency is given, i.e., the complex velocities do not depend on the frequency.
+If it is given, $\tilde{c}(\omega) = \tilde{c}(\omega_0) (\omega / \omega_0)^{\eta}$ is used, and the phase velocities $c_0 (\omega / \omega_0)^{\eta}$ are used as the velocities of the elastic medium at each frequency.
+Since $\eta$ differs from layer to layer, the LVLs are then judged at each frequency.
+
+\subsection{Complex roots}
+
+A mode of a viscoelastic medium is a root of $F_0$ or $F_l$ at a complex wavenumber
+\begin{align}
+  k = \frac{\omega}{c} - \symrm{i} a,
+\end{align}
+where $c$ is the phase velocity and $a$ is the attenuation coefficient: the amplitude decays as $\symrm{e}^{-a x}$ in the direction of propagation.
+The roots are searched for as follows at each frequency.
+\begin{enumerate}
+  \item The real roots $k_{\symrm{e}} = \omega / c_{\symrm{e}}$ of the elastic medium, i.e., of the medium with the real phase velocities, are obtained as in the root search above.
+  \item Starting from $k = k_{\symrm{e}} - \symrm{i} a_{\symrm{prev}}$, where $a_{\symrm{prev}}$ is the attenuation coefficient of the same mode at the previous frequency ($0$ if it is not available), the Newton iteration $k \leftarrow k - F / (\partial F / \partial k)$ is applied to the secular function with which the elastic root was found. The secular functions are analytic in $k$ away from the branch cuts of $\nu$ and $\gamma$, so that the derivative is evaluated by a finite difference along the real axis with a step of $10^{-7} |k|$. A step is limited to $0.02 |k|$, and the iteration is terminated when the step becomes smaller than $10^{-13} |k|$.
+  \item The root is accepted if $0.8 k_{\symrm{e}} < \symrm{Re}\, k < 1.2 k_{\symrm{e}}$ and $0 \leq a < 1$ (in the reciprocal of the unit of length of the input).
+  \item A mode that converged to the same root as another mode (a relative difference smaller than $10^{-6}$), or that was not accepted, is solved again with every secular function from the initial guesses of the modes concerned. Among the roots that differ from those of all the other modes, the one with the smallest $|F / (\partial F / \partial k)| / |k|$ is taken. If there is none, the mode is written as nan at that frequency.
+  \item The modes are numbered in ascending order of the phase velocity.
+\end{enumerate}
+The fourth step is needed where two modes cross, which they can do in a viscoelastic medium whereas they only approach each other in an elastic one.
+In the cases examined so far, one of the two modes is trapped in an LVL there; its root almost cancels with a pole in $F_0$ and that of the other mode almost cancels with a pole in $F_l$, so that each secular function leads to only one of the two roots from both initial guesses.
+
+If the lowest frequency is not zero, there is no previous frequency for the first one, and starting from $a = 0$ may lead to another root.
+The attenuation is therefore switched on in ten steps there: the velocities are set to $c_0 (\tilde{c} / c_0)^{\xi}$ with $\xi = 0.1, 0.2, \dots, 0.9$, the root is followed by the Newton iteration, and the result is used as the initial guess.
+The attenuation coefficient of the fundamental mode at zero frequency is linearly extrapolated from the first two frequencies.
 
 \section{Rayleigh wave in a homogeneous half-space}
 

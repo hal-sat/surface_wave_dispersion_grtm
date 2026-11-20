@@ -1,0 +1,7 @@
+nf = 250 points
+fmin = 0.0 Hz
+fmax = 25.0 Hz
+df = 0.1 Hz
+ngrid = 100 points
+velocity_model = frequency independent
+reference_frequency = None
