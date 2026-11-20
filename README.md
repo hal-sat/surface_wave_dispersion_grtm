@@ -23,6 +23,9 @@ make
 python3 run.py -if demo/OrgM1.profile
 ```
 
+`run.py` can be called from any directory; the input file and `-od` are
+relative to the current directory.
+
 The results are written to `<name>_results_grtm/` next to the input file
 (`-od` changes the directory). Other options:
 

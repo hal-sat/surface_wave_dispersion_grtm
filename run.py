@@ -95,15 +95,25 @@ if f_ref is not None and f_ref <= 0.0:
 df = (fmax - fmin) / float(nf)
 
 
-path2paramfile = args.input_file
-targ_dir = os.path.dirname(path2paramfile) + "/"
+# The input file and the output directory are relative to the current
+# directory, whereas the executable is looked for next to this script, so that
+# this script can be called from any directory.
+script_dir = os.path.dirname(os.path.realpath(__file__))
+path2main = os.path.join(script_dir, "bin", "main")
+if not os.path.isfile(path2main):
+    parser.error("{} was not found; run make in {}".format(path2main, script_dir))
+
+path2paramfile = os.path.abspath(args.input_file)
+if not os.path.isfile(path2paramfile):
+    parser.error("--input-file {} was not found".format(args.input_file))
+targ_dir = os.path.dirname(path2paramfile)
 case_name = os.path.splitext(os.path.basename(path2paramfile))[0]
 
-res_dir = targ_dir + case_name + "_results_grtm/"
+res_dir = os.path.join(targ_dir, case_name + "_results_grtm")
 if args.output_directory is not None:
-    res_dir = args.output_directory
-if res_dir[-1] != "/":
-    res_dir = res_dir + "/"
+    res_dir = os.path.abspath(args.output_directory)
+# The executable appends the file names to this string.
+res_dir = res_dir + "/"
 
 # A profile with Qp and Qs (6 values per layer) is a viscoelastic medium, for
 # which the attenuation coefficients are computed instead of the medium
@@ -123,7 +133,7 @@ os.makedirs(res_dir)
 
 # ==============================================================================
 
-f = open(res_dir + "/employed_params.txt", "w")
+f = open(res_dir + "employed_params.txt", "w")
 # nf is the number of frequency intervals (nf + 1 points from fmin to fmax).
 f.write("nf = {} points\n".format(nf))
 f.write("fmin = {} Hz\n".format(fmin))
@@ -143,13 +153,17 @@ f.close()
 
 # ==============================================================================
 
-argv = " " + path2paramfile
-argv += " " + res_dir
-argv += " " + str(nf)
-argv += " " + str(fmax)
-argv += " " + str(ngrid)
-argv += " " + str(fmin)
-argv += " " + ("none" if f_ref is None else str(f_ref))
-argv += " " + ("elastic" if args.elastic else "auto")
-result = subprocess.run(["./bin/main" + argv], shell=True)
+# Passed as a list (without a shell), so that paths with spaces work.
+argv = [
+    path2main,
+    path2paramfile,
+    res_dir,
+    str(nf),
+    str(fmax),
+    str(ngrid),
+    str(fmin),
+    "none" if f_ref is None else str(f_ref),
+    "elastic" if args.elastic else "auto",
+]
+result = subprocess.run(argv)
 sys.exit(result.returncode)
