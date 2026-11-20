@@ -99,10 +99,12 @@ main(int argc, char** argv)
     swd.write_rayleigh_results(resdir + "Rayl_phvs.csv");
     swd.write_rayleigh_attenuation(resdir + "Rayl_attens.csv");
   } else {
-    // Elastic medium: phase velocities and relative powers.
+    // Elastic medium: phase velocities, medium responses and relative
+    // powers.
     swd.dump_number_of_modes_rayleigh();
     swd.write_rayleigh_results(resdir + "Rayl_phvs.csv");
     swd.calculate_rayleigh_power_fraction();
+    swd.write_rayleigh_medium_response(resdir + "Rayl_medium_responses.csv");
     swd.write_rayleigh_power_fraction(resdir + "Rayl_psds.csv");
   }
   swd.dump_ground_structure();

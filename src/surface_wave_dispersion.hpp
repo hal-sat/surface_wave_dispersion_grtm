@@ -53,6 +53,10 @@ private:
   // keys_rayleigh[i][j] / 2 is the index of the secular function with which
   // phvs_rayleigh[i][j] was found (0: free surface, 1, 2, ...: LVLs).
   std::vector<std::vector<int>> keys_rayleigh;
+  std::vector<std::vector<double>> medium_responses_rayleigh;
+  // medium_responses_rayleigh[i][j]: absolute value of the medium response
+  // of the jth mode at freq[i] (vertical point force and vertical
+  // displacement at the free surface).
   std::vector<std::vector<double>> psds_rayleigh;
   // psds_rayleigh[i][j]: power of the jth mode relative to that of the 0th
   // mode at freq[i] (vertical point force and vertical displacement at the
@@ -294,6 +298,7 @@ public:
 
   void write_rayleigh_results(std::string const file_path);
   void write_rayleigh_power_fraction(std::string const file_path);
+  void write_rayleigh_medium_response(std::string const file_path);
   void write_rayleigh_attenuation(std::string const file_path);
 
   void read_profile(std::string const path, char const delimiter = ',');

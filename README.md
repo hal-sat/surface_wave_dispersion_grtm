@@ -2,9 +2,9 @@
 
 Phase velocities of Rayleigh waves in a layered half-space, computed by the
 generalized reflection/transmission (R/T) coefficient method. For an elastic
-medium the relative modal powers are also computed, and for a viscoelastic
-medium (a profile with Qp and Qs) the attenuation coefficients are computed
-instead. The theory is summarized in `note/main.pdf`.
+medium the medium responses and the relative modal powers are also computed,
+and for a viscoelastic medium (a profile with Qp and Qs) the attenuation
+coefficients are computed instead. The theory is summarized in `note/main.pdf`.
 
 ## Requirements
 
@@ -67,8 +67,14 @@ velocities depend on the frequency.
 ## Output
 
 - `Rayl_phvs.csv`: frequency (Hz) followed by the phase velocity of each mode
+- `Rayl_medium_responses.csv` (elastic medium only): frequency (Hz) followed
+  by the absolute value of the medium response `A` of each mode for a vertical
+  point force and the vertical displacement at the free surface. Its unit
+  follows from those of the input: 1/(kPa m) for m, m/s and t/m^3. The power
+  of a mode is proportional to `c A^2`, where `c` is its phase velocity
 - `Rayl_psds.csv` (elastic medium only): frequency (Hz) followed by the power
-  of each mode relative to that of the mode with the lowest phase velocity
+  of each mode relative to that of the mode with the lowest phase velocity,
+  i.e. the ratio of `c A^2`
 - `Rayl_attens.csv` (viscoelastic medium only): frequency (Hz) followed by the
   attenuation coefficient (1/m) of each mode
 - `employed_params.txt`: parameters used for the computation

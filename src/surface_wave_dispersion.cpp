@@ -206,6 +206,14 @@ SurfaceWaveDispersion::write_rayleigh_power_fraction(
 }
 
 void
+SurfaceWaveDispersion::write_rayleigh_medium_response(
+  std::string const file_path)
+{
+  this->write_table(
+    file_path, this->medium_responses_rayleigh, this->nmodes_rayleigh);
+}
+
+void
 SurfaceWaveDispersion::write_rayleigh_attenuation(std::string const file_path)
 {
   this->write_table(file_path, this->attens_rayleigh, this->nmodes_rayleigh);
@@ -864,11 +872,13 @@ SurfaceWaveDispersion::rayleigh_secular_functions(std::complex<double> const k,
 void
 SurfaceWaveDispersion::calculate_rayleigh_power_fraction()
 {
-  // Power of each mode relative to that of the 0th mode, following the
-  // Thomson-Haskell implementation: (A_j^2 c_j) / (A_0^2 c_0), where A is the
-  // medium response (Harkrider, 1964) for a vertical point force and the
-  // vertical displacement at the free surface. Here A is evaluated as the
-  // residue of the surface response; see rayleigh_medium_response().
+  // Absolute value of the medium response A (Harkrider, 1964) of each mode
+  // for a vertical point force and the vertical displacement at the free
+  // surface, and the power of each mode relative to that of the 0th mode,
+  // following the Thomson-Haskell implementation: (A_j^2 c_j) / (A_0^2 c_0).
+  // Here A is evaluated as the residue of the surface response; see
+  // rayleigh_medium_response().
+  this->medium_responses_rayleigh.clear();
   this->psds_rayleigh.clear();
 
   size_t n_unresolved = 0;
@@ -877,9 +887,12 @@ SurfaceWaveDispersion::calculate_rayleigh_power_fraction()
   for (size_t i = 0; i < this->phvs_rayleigh.size(); ++i) {
     std::vector<double> const& phvs_at_freq = this->phvs_rayleigh[i];
     std::vector<double> psds_at_freq(phvs_at_freq.size(), std::nan(""));
+    std::vector<double> medium_responses_at_freq(phvs_at_freq.size(),
+                                                 std::nan(""));
 
     // f = 0: the medium response is not defined.
     if (this->freq[i] == 0.0) {
+      this->medium_responses_rayleigh.push_back(medium_responses_at_freq);
       this->psds_rayleigh.push_back(psds_at_freq);
       continue;
     }
@@ -914,6 +927,7 @@ SurfaceWaveDispersion::calculate_rayleigh_power_fraction()
       std::complex<double> const medium_response =
         this->rayleigh_medium_response(phv, omega, radius, medium);
       double const power = std::norm(medium_response) * phv;
+      medium_responses_at_freq[j] = std::abs(medium_response);
 
       if (j == 0) {
         power_0th = power;
@@ -925,11 +939,12 @@ SurfaceWaveDispersion::calculate_rayleigh_power_fraction()
         not(std::isfinite(power_0th) && power_0th > 0.0)) {
       ++n_invalid_0th;
     }
+    this->medium_responses_rayleigh.push_back(medium_responses_at_freq);
     this->psds_rayleigh.push_back(psds_at_freq);
   }
 
   if (n_unresolved > 0) {
-    std::cerr << "[Rayl power fraction] " << n_unresolved
+    std::cerr << "[Rayl medium response] " << n_unresolved
               << " mode(s) were too close to a neighboring root to be "
                  "resolved (written as nan)."
               << std::endl;

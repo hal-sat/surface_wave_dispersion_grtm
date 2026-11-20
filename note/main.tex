@@ -477,8 +477,10 @@ If $r_c \leq 4\, \delta k$, the mode is regarded as unresolved and \texttt{nan} 
 
 \subsection{Relative power}
 
+The program outputs $|A_n|$ of every mode.
+Its unit follows from those of the input; for lengths in m, velocities in m/s and densities in $\symrm{t/m^3}$, $\mu$ is in kPa and $|A_n|$ is in $1 / (\symrm{kPa\,m})$, so that \eqref{e:far_field} gives the displacement in m for a force in kN.
 From \eqref{e:far_field}, the power of the $n$th mode at a given distance is proportional to $|A_n|^2 / k_n = |A_n|^2 c_n / \omega$.
-The program outputs the power relative to that of the mode with the lowest phase velocity at each frequency ($n = 0$),
+The program also outputs the power relative to that of the mode with the lowest phase velocity at each frequency ($n = 0$),
 \begin{align}
   \frac{P_n}{P_0} = \frac{\left| A_n \right|^2 c_n}{\left| A_0 \right|^2 c_0},
 \end{align}
@@ -488,7 +490,7 @@ The ratio is not meaningful if the $0$th mode is trapped in an LVL and has a van
 
 \section{Viscoelastic medium}
 
-If $Q_P^{(i)}$ and $Q_S^{(i)}$ are given in the input, the attenuation coefficients of the modes are computed instead of the relative powers.
+If $Q_P^{(i)}$ and $Q_S^{(i)}$ are given in the input, the attenuation coefficients of the modes are computed instead of the medium responses and the relative powers.
 
 \subsection{Complex velocities}
 

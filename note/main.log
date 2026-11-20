@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.17.0 (TeX Live 2023/Debian)  (format=lualatex 2025.9.26)  20 NOV 2026 23:28
+This is LuaHBTeX, Version 1.17.0 (TeX Live 2023/Debian)  (format=lualatex 2025.9.26)  20 NOV 2026 23:51
  restricted system commands enabled.
 **main.tex
 (./main.tex
@@ -1782,37 +1782,37 @@ LaTeX Font Info:    Font shape `JY3/gt/m/n' will be
  [2] [3] [4] [5]
 [6]
 LaTeX Font Info:    Font shape `JT3/gt/m/n' will be
-(Font)              scaled to size 9.6222pt on input line 588.
+(Font)              scaled to size 9.6222pt on input line 590.
 LaTeX Font Info:    Font shape `JY3/gt/m/n' will be
-(Font)              scaled to size 9.6222pt on input line 588.
+(Font)              scaled to size 9.6222pt on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/NotoSerifCJKJP(0)/m/sc' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/NotoSerifCJKJP(0)/m/sc' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/NotoSerifCJKJP(0)/m/sc' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/NotoSerifCJKJP(0)/m/sc' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/gt/m/it' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
 LaTeX Font Info:    Kanji font shape `JY3/NotoSerifCJKJP(0)/m/sc' undefined
-(Font)              No change on input line 588.
+(Font)              No change on input line 590.
  [7] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
@@ -1832,7 +1832,7 @@ e, 69 glue_spec, 37 attribute_list, 2 write, 13 user_defined nodes
    avail lists: 1:41,2:56718,3:245,4:796,5:930,6:47,7:9094,8:91,9:1604,10:12,11:
 479
  56000 multiletter control sequences out of 65536+600000
- 131 fonts using 232850151 bytes
+ 131 fonts using 232849991 bytes
  106i,17n,101p,1754b,1677s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/kimura/.fonts/STIXTwoMath/STIXTwoText-Italic.ttf></home/kimura/.fonts/STI
 XTwoMath/STIXTwoText-Regular.ttf></home/kimura/.fonts/STIXTwoMath/STIXTwoMath-Re
@@ -1840,7 +1840,7 @@ gular.ttf></home/kimura/.fonts/STIXTwoMath/STIXTwoMath-Regular.ttf></home/kimura
 /.fonts/STIXTwoMath/STIXTwoMath-Regular.ttf></usr/share/texmf/fonts/opentype/pub
 lic/lm/lmmono10-regular.otf></home/kimura/.fonts/Helvetica_Neue/HelveticaNeue.tt
 c></home/kimura/.fonts/STIXTwoMath/STIXTwoText-Regular.ttf>
-Output written on main.pdf (7 pages, 169381 bytes).
+Output written on main.pdf (7 pages, 170402 bytes).
 
 PDF statistics: 85 PDF objects out of 1000 (max. 8388607)
  51 compressed objects within 1 object stream

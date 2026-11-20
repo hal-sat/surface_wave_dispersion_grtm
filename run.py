@@ -60,8 +60,8 @@ parser.add_argument(
     "--elastic",
     action="store_true",
     help="Ignore Qp and Qs of the profile and treat the medium as elastic "
-    "(the relative powers are computed instead of the attenuation "
-    "coefficients).",
+    "(the medium responses and the relative powers are computed instead "
+    "of the attenuation coefficients).",
 )
 parser.add_argument(
     "-f0",
@@ -106,8 +106,8 @@ if res_dir[-1] != "/":
     res_dir = res_dir + "/"
 
 # A profile with Qp and Qs (6 values per layer) is a viscoelastic medium, for
-# which the attenuation coefficients are computed instead of the relative
-# powers.
+# which the attenuation coefficients are computed instead of the medium
+# responses and the relative powers.
 with open(path2paramfile) as f:
     layers = [l for l in f if l.strip() != "" and not l.strip().startswith("#")]
 attenuation_given = len(layers) > 0 and len(layers[0].split(",")) == 6
